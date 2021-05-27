@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.trimble.ag.splice.geonote">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/GeoNoteTheme">
+
+        <meta-data
+            android:name="com.trimble.ag.splice.extension"
+            android:value="com.trimble.ag.splice.geonote.GeoNoteExtension" />
+        <meta-data
+            android:name="com.trimble.ag.splice.extension.version"
+            android:value="v2.0" />
+        <meta-data
+            android:name="com.trimble.ag.splice.extension.developer"
+            android:value="Field Session" />
+        <meta-data
+            android:name="com.trimble.ag.splice.extension.description"
+            android:value="Extension for creation and management of GeoNotes" />
+
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
