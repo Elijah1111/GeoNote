@@ -99,7 +99,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         if(name =="Hazard"){
             geoNoteType = GeoNoteType.HAZARD;
         }
-        GeoNote geoNote =new GeoNote(name, drawable, geoNoteType);
+        GeoNote geoNote =new GeoNote(name, 5, geoNoteType, 1.0, 2.0);
         geoNoteDrawerViewModel.insert(geoNote);
     }
 }
