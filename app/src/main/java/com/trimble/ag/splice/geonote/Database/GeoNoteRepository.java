@@ -1,6 +1,7 @@
 package com.trimble.ag.splice.geonote.Database;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
@@ -15,8 +16,8 @@ public class GeoNoteRepository{
     private GeoNoteDao geoNoteDao;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    public GeoNoteRepository(Application application){
-        GeoNoteDatabase db = GeoNoteDatabase.getDatabase(application);
+    public GeoNoteRepository(Context context){
+        GeoNoteDatabase db = GeoNoteDatabase.getDatabase(context);
         geoNoteDao = db.GeoNoteDao();
     }
 

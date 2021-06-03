@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.trimble.ag.splice.Extension;
+import com.trimble.ag.splice.geonote.Database.GeoNoteRepository;
 import com.trimble.ag.splice.geonote.GeoNote;
 import com.trimble.ag.splice.geonote.GeoNoteDrawer.GeonoteDrawerAdapter;
 import com.trimble.ag.splice.geonote.GeoNoteType;
@@ -24,7 +25,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
     protected GeonoteDrawerAdapter adapter;
     protected String[] Dataset;
     protected int[] Imageset;
-    private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
+    private GeoNoteRepository mRepository;
     public GeoNoteDrawerFragment() {
         // Required empty public constructor
     }
@@ -40,7 +41,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         super.onCreate(savedInstanceState);
         initItemset();
         adapter = new GeonoteDrawerAdapter(Dataset,Imageset);
-        geoNoteDrawerViewModel = new ViewModelProvider(this).get(GeoNoteDrawerViewModel.class);
+        mRepository = new GeoNoteRepository(getContext());
     }
 
     public void initItemset() {
@@ -73,7 +74,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
 
         //return getLayoutInflater(inflater).inflate(R.layout.geonote_drawer, container, false);
     }
-    public void addGeoNote(Drawable drawable, String name){
+    public void addGeoNote(int drawable, String name){
         GeoNoteType geoNoteType = null;
         if(name == "Crop"){
             geoNoteType = GeoNoteType.CROP;
@@ -99,7 +100,8 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         if(name =="Hazard"){
             geoNoteType = GeoNoteType.HAZARD;
         }
-        GeoNote geoNote =new GeoNote(name, drawable, geoNoteType);
-        geoNoteDrawerViewModel.insert(geoNote);
+        GeoNote geoNote =new GeoNote(name, drawable, geoNoteType, 0, 0);
+       // geoNoteDrawerViewModel.insert(geoNote);
+        mRepository.addGeoNote(geoNote);
     }
 }
