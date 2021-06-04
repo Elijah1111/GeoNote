@@ -4,22 +4,31 @@ import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import java.util.UUID;
 
 @Entity
 public class GeoNote {
-    private final UUID uid = java.util.UUID.randomUUID();
-    private String name = "GeoNote";
-    private GeoNoteType type;
-
-    private String[] pictures = {null,null};//path to stored pictures
-    private String audio = null;//path to audio clip
-    private int icon;
-    private double[] pos = new double[]{0,0};//The Latitude and Longitude
-
-    public GeoNote(String n, int icon, GeoNoteType t,double lat, double lon){
+    @PrimaryKey
+    @NonNull
+    public UUID uid =   java.util.UUID.randomUUID();
+    @ColumnInfo(name = "name")
+    public String name = "GeoNote";
+    @ColumnInfo(name = "type")
+    public GeoNoteType type = null;
+    @ColumnInfo(name = "pictures")
+    public String[] pictures = {"", ""};//path to stored pictures
+    @ColumnInfo(name = "audio")
+    public String audio = "";//path to audio clip
+    @ColumnInfo(name = "icon")
+    public int icon = 0;
+    @ColumnInfo(name = "position")
+    public double[] pos = new double[]{0, 0};//The Latitude and Longitude
+}
+   /* public GeoNote(String n, int icon, GeoNoteType t,double lat, double lon){
         this.name = n;
         this.icon = icon;//TODO
         this.type = t;
@@ -65,4 +74,4 @@ public class GeoNote {
     public double[] getPos(){
         return pos;
     }
-}
+}*/

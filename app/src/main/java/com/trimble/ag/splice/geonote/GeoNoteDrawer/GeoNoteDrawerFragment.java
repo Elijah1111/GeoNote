@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.trimble.ag.splice.Extension;
@@ -66,6 +67,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         layoutManager = new GridLayoutManager(getActivity(), 3);
         recyclerView.setLayoutManager(layoutManager);
 
+        adapter.addRepo(mRepository);
 
         recyclerView.setAdapter(adapter);
 
@@ -74,34 +76,5 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
 
         //return getLayoutInflater(inflater).inflate(R.layout.geonote_drawer, container, false);
     }
-    public void addGeoNote(int drawable, String name){
-        GeoNoteType geoNoteType = null;
-        if(name == "Crop"){
-            geoNoteType = GeoNoteType.CROP;
-        }
-        if(name == "Garbage"){
-            geoNoteType = GeoNoteType.TRASH;
-        }
-        if(name == "Livestock"){
-            geoNoteType = GeoNoteType.ANIMAL;
-        }
-        if(name == "Pest"){
-            geoNoteType = GeoNoteType.PEST;
-        }
-        if(name == "Product"){
-            geoNoteType = GeoNoteType.PRODUCT;
-        }
-        if(name == "Spill"){
-            geoNoteType = GeoNoteType.SPILL;
-        }
-        if(name =="Weed"){
-            geoNoteType = GeoNoteType.WEED;
-        }
-        if(name =="Hazard"){
-            geoNoteType = GeoNoteType.HAZARD;
-        }
-        GeoNote geoNote =new GeoNote(name, drawable, geoNoteType, 0, 0);
-       // geoNoteDrawerViewModel.insert(geoNote);
-        mRepository.addGeoNote(geoNote);
-    }
+
 }
