@@ -18,7 +18,7 @@ public class GeoNoteRepository{
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public GeoNoteRepository(Context context){
-        GeoNoteDatabase db = Room.databaseBuilder(context.getApplicationContext(), GeoNoteDatabase.class, "database_name").build();
+        GeoNoteDatabase db = Room.databaseBuilder(context.getApplicationContext(), GeoNoteDatabase.class, "geonotes_database").build();
         geoNoteDao = db.GeoNoteDao();
     }
 
