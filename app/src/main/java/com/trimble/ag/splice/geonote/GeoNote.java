@@ -14,7 +14,7 @@ import java.util.UUID;
 public class GeoNote {
     @PrimaryKey
     @NonNull
-    public UUID uid =   java.util.UUID.randomUUID();
+    public UUID uid = java.util.UUID.randomUUID();//TODO I think this should be a final
     @ColumnInfo(name = "name")
     public String name = "GeoNote";
     @ColumnInfo(name = "type")
@@ -27,10 +27,13 @@ public class GeoNote {
     public int icon = 0;
     @ColumnInfo(name = "position")
     public double[] pos = new double[]{0, 0};//The Latitude and Longitude
-}
-   /* public GeoNote(String n, int icon, GeoNoteType t,double lat, double lon){
+
+    public GeoNote(){
+        super();
+    }
+    public GeoNote(String n, int icon, GeoNoteType t,double lat, double lon){
         this.name = n;
-        this.icon = icon;//TODO
+        this.icon = icon;
         this.type = t;
         pos[0] = lat;
         pos[1] = lon;
@@ -39,6 +42,7 @@ public class GeoNote {
     public UUID getUid(){
         return uid;
     }
+
     public void addAudio(String a){
         //TODO make sure this exists
         audio = a;
@@ -74,4 +78,4 @@ public class GeoNote {
     public double[] getPos(){
         return pos;
     }
-}*/
+}
