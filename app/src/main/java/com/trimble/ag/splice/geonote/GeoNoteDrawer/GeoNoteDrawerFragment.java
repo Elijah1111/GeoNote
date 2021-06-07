@@ -15,6 +15,7 @@ import com.trimble.ag.splice.Extension;
 import com.trimble.ag.splice.geonote.Database.GeoNoteRepository;
 import com.trimble.ag.splice.geonote.GeoNote;
 import com.trimble.ag.splice.geonote.GeoNoteDrawer.GeonoteDrawerAdapter;
+import com.trimble.ag.splice.geonote.GeoNoteExtension;
 import com.trimble.ag.splice.geonote.GeoNoteType;
 import com.trimble.ag.splice.geonote.R;
 import com.trimble.ag.toolkit.ui.SpliceFragment;
@@ -27,12 +28,16 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
     protected String[] Dataset;
     protected int[] Imageset;
     private GeoNoteRepository mRepository;
+
+    private GeoNoteExtension extension;
+
     public GeoNoteDrawerFragment() {
         // Required empty public constructor
     }
 
     public GeoNoteDrawerFragment(Extension extension) {
         super(extension);
+        this.extension = (GeoNoteExtension) extension;
     }
 
 
@@ -42,6 +47,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         super.onCreate(savedInstanceState);
         initItemset();
         adapter = new GeonoteDrawerAdapter(Dataset,Imageset);
+        adapter.extension = extension;
         mRepository = new GeoNoteRepository(getContext());
     }
 

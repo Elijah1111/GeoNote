@@ -7,18 +7,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.navigation.NavDirections;
 
-
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.trimble.ag.splice.Extension;
 import com.trimble.ag.splice.geonote.Database.GeoNoteRepository;
 import com.trimble.ag.splice.geonote.GeoNote;
+import com.trimble.ag.splice.geonote.GeoNoteExtension;
 import com.trimble.ag.splice.geonote.GeoNoteType;
 import com.trimble.ag.splice.geonote.R;
+import com.trimble.ag.splice.location.Location;
 
 import java.util.Objects;
 import java.util.zip.Inflater;
@@ -29,6 +27,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
     private String[] mDataSet;
     private int[] mImageSet;
     private GeoNoteRepository repository;
+    protected GeoNoteExtension extension;
 
     public void addRepo(GeoNoteRepository mRepository) {
         repository = mRepository;
@@ -44,8 +43,12 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         private final TextView textView;
         private final ImageView imageView;
         private GeoNoteRepository repository;
-        public ViewHolder(View v, GeoNoteRepository mRepository, int[] images, String[] data) {
+        private GeoNoteExtension extension;
+
+
+        public ViewHolder(View v, GeoNoteRepository mRepository, int[] images, String[] data, Extension extension){
             super(v);
+            this.extension = (GeoNoteExtension) extension;
             repository =mRepository;
             // Define click listener for the ViewHolder's View.
             v.setOnClickListener(new View.OnClickListener() {
@@ -68,38 +71,46 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         }
 
         public void addGeoNote(int drawable, String name){
-            GeoNoteType geoNoteType = null;
-            if(name == "Crop"){
-                geoNoteType = GeoNoteType.CROP;
+            GeoNoteType geoNoteType;
+            switch (name) {//pick type
+                case "Crop":
+                    geoNoteType = GeoNoteType.CROP;
+                    break;
+                case "Garbage":
+                    geoNoteType = GeoNoteType.TRASH;
+                    break;
+                case "Livestock":
+                    geoNoteType = GeoNoteType.ANIMAL;
+                    break;
+                case "Pest":
+                    geoNoteType = GeoNoteType.PEST;
+                    break;
+                case "Product":
+                    geoNoteType = GeoNoteType.PRODUCT;
+                    break;
+                case "Spill":
+                    geoNoteType = GeoNoteType.SPILL;
+                    break;
+                case "Weed":
+                    geoNoteType = GeoNoteType.WEED;
+                    break;
+                case "Hazard":
+                    geoNoteType = GeoNoteType.HAZARD;
+                    break;
+                default:
+                    Log.w(TAG, "Invalid Icon Type");
+                    geoNoteType = GeoNoteType.HAZARD;
+                    break;
             }
-            if(name == "Garbage"){
-                geoNoteType = GeoNoteType.TRASH;
-            }
-            if(name == "Livestock"){
-                geoNoteType = GeoNoteType.ANIMAL;
-            }
-            if(name == "Pest"){
-                geoNoteType = GeoNoteType.PEST;
-            }
-            if(name == "Product"){
-                geoNoteType = GeoNoteType.PRODUCT;
-            }
-            if(name == "Spill"){
-                geoNoteType = GeoNoteType.SPILL;
-            }
-            if(name =="Weed"){
-                geoNoteType = GeoNoteType.WEED;
-            }
-            if(name =="Hazard"){
-                geoNoteType = GeoNoteType.HAZARD;
-            }
-            GeoNote geoNote =new GeoNote();
-            geoNote.name = name;
-            geoNote.type = geoNoteType;
-            geoNote.icon =drawable;
+
+            Location location = extension.getCurrentLocation();
+            Log.w(TAG, "Location: "+location.getLatitude()+", "+location.getLongitude());
+            GeoNote geoNote   = new GeoNote(name,drawable,geoNoteType,
+                    location.getLatitude(),location.getLongitude());
+            //TODO Pictures/audio
+
             // geoNoteDrawerViewModel.insert(geoNote);
             repository.addGeoNote(geoNote);
-
         }
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)
@@ -117,7 +128,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.geonote_drawer_item, parent, false);
        // geoNoteDrawerFragment = new GeoNoteDrawerFragment();
-        return new ViewHolder(v,repository,mImageSet, mDataSet);
+        return new ViewHolder(v,repository,mImageSet, mDataSet,extension);
     }
 
     @Override

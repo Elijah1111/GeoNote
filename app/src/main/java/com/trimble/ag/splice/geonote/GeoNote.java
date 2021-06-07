@@ -39,43 +39,14 @@ public class GeoNote {
         pos[1] = lon;
     }
 
-    public UUID getUid(){
-        return uid;
-    }
-
     public void addAudio(String a){
         //TODO make sure this exists
         audio = a;
-    }
-    public String getAudio(){
-        return audio;
     }
 
     public void addImages(String p1, String p2){
         //TODO make sure these exist
         pictures[0] = p1;
         pictures[1] = p2;
-    }
-    public String[] getPictures(){//return path to pictures
-        return pictures;
-    }
-    public int getIcon() {//return icon to draw
-        return icon;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name){
-        this.name = name;
-    }
-    public GeoNoteType getType(){
-        return type;
-    }
-    public void setType(GeoNoteType t){
-        this.type = t;
-    }
-    public double[] getPos(){
-        return pos;
     }
 }
