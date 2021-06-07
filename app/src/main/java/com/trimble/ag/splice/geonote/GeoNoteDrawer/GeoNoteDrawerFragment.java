@@ -82,5 +82,4 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
 
         //return getLayoutInflater(inflater).inflate(R.layout.geonote_drawer, container, false);
     }
-
 }

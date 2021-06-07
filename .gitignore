@@ -1,3 +1,11 @@
+app/
+gradle.properties
+gradle/
+gradlew
+gradlew.bat
+settings.gradle
+
+
 #built application files
 *.apk
 *.ap_
