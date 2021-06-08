@@ -8,11 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavDirections;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.trimble.ag.splice.Extension;
+import com.trimble.ag.splice.geonote.Database.GeoNoteRepository;
 import com.trimble.ag.splice.geonote.GeoNote;
 import com.trimble.ag.splice.geonote.GeoNoteDrawer.GeonoteDrawerAdapter;
+import com.trimble.ag.splice.geonote.GeoNoteExtension;
 import com.trimble.ag.splice.geonote.GeoNoteType;
 import com.trimble.ag.splice.geonote.R;
 import com.trimble.ag.toolkit.ui.SpliceFragment;
@@ -24,13 +27,17 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
     protected GeonoteDrawerAdapter adapter;
     protected String[] Dataset;
     protected int[] Imageset;
-    private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
+    private GeoNoteRepository mRepository;
+
+    private GeoNoteExtension extension;
+
     public GeoNoteDrawerFragment() {
         // Required empty public constructor
     }
 
     public GeoNoteDrawerFragment(Extension extension) {
         super(extension);
+        this.extension = (GeoNoteExtension) extension;
     }
 
 
@@ -40,7 +47,8 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         super.onCreate(savedInstanceState);
         initItemset();
         adapter = new GeonoteDrawerAdapter(Dataset,Imageset);
-        geoNoteDrawerViewModel = new ViewModelProvider(this).get(GeoNoteDrawerViewModel.class);
+        adapter.extension = extension;
+        mRepository = new GeoNoteRepository(getContext());
     }
 
     public void initItemset() {
@@ -65,6 +73,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         layoutManager = new GridLayoutManager(getActivity(), 3);
         recyclerView.setLayoutManager(layoutManager);
 
+        adapter.addRepo(mRepository);
 
         recyclerView.setAdapter(adapter);
 
@@ -72,34 +81,5 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         // Inflate the layout for this fragment
 
         //return getLayoutInflater(inflater).inflate(R.layout.geonote_drawer, container, false);
-    }
-    public void addGeoNote(Drawable drawable, String name){
-        GeoNoteType geoNoteType = null;
-        if(name == "Crop"){
-            geoNoteType = GeoNoteType.CROP;
-        }
-        if(name == "Garbage"){
-            geoNoteType = GeoNoteType.TRASH;
-        }
-        if(name == "Livestock"){
-            geoNoteType = GeoNoteType.ANIMAL;
-        }
-        if(name == "Pest"){
-            geoNoteType = GeoNoteType.PEST;
-        }
-        if(name == "Product"){
-            geoNoteType = GeoNoteType.PRODUCT;
-        }
-        if(name == "Spill"){
-            geoNoteType = GeoNoteType.SPILL;
-        }
-        if(name =="Weed"){
-            geoNoteType = GeoNoteType.WEED;
-        }
-        if(name =="Hazard"){
-            geoNoteType = GeoNoteType.HAZARD;
-        }
-        GeoNote geoNote =new GeoNote(name, 5, geoNoteType, 1.0, 2.0);
-        geoNoteDrawerViewModel.insert(geoNote);
     }
 }
