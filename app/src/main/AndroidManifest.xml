@@ -5,7 +5,7 @@
     <uses-feature
         android:name="android.hardware.camera2"
         android:required="true">
-        
+
     </uses-feature>
     <application
         android:allowBackup="true"
