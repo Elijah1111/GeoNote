@@ -97,6 +97,12 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                 case "Hazard":
                     geoNoteType = GeoNoteType.HAZARD;
                     break;
+                case "Record":
+                    //TODO: Do something for the record
+                    break;
+                case "Camera":
+                    //TODO: Do something
+                    break;
                 default:
                     Log.w(TAG, "Invalid Icon Type");
                     geoNoteType = GeoNoteType.HAZARD;
