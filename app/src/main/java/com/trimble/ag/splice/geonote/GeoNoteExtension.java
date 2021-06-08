@@ -31,7 +31,7 @@ public class GeoNoteExtension extends Extension implements ActivityPage {
     }
 
     @Override
-    public String getName() { return "GeoNote"; }
+    public String getName() { return "InsertFunnyName";} //"GeoNote"; }
 
     @NonNull
     @Override
