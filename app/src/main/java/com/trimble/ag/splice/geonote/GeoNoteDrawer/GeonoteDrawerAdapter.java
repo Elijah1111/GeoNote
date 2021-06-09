@@ -1,10 +1,12 @@
 package com.trimble.ag.splice.geonote.GeoNoteDrawer;
 
 import android.content.Intent;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import com.trimble.ag.splice.location.Location;
 import java.util.Objects;
 import java.util.zip.Inflater;
 
+import static androidx.core.app.ActivityCompat.startActivityForResult;
 import static androidx.core.content.ContextCompat.startActivity;
 
 public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdapter.ViewHolder>{
@@ -105,8 +108,9 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                     break;
                 case "Camera":
                     //TODO: Do something
-                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                    startActivity(intent); //TODO: This doesn't work because we don't have a function yet
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    // start the image capture Intent
+                    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                     break;
                 default:
                     Log.w(TAG, "Invalid Icon Type");
@@ -139,6 +143,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.geonote_drawer_item, parent, false);
        // geoNoteDrawerFragment = new GeoNoteDrawerFragment();
+
         return new ViewHolder(v,repository,mImageSet, mDataSet,extension);
     }
 
