@@ -24,14 +24,6 @@ public abstract class GeoNoteDatabase extends RoomDatabase {
     public abstract GeoNoteDao GeoNoteDao();
     private static final String DATABSE_NAME  = "geonote-data";
     private static GeoNoteDatabase INSTANCE = null;
-    Migration migration = new Migration(1,2) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE history ADD COLUMN note TEXT DEFAULT NULL");
-            database.execSQL("ALTER TABLE history ADD COLUMN noteImage TEXT DEFAULT NULL");
-        }
-
-    };
     @Synchronized
     public static GeoNoteDatabase getInstance(Context context){
             GeoNoteDatabase instance =INSTANCE;
@@ -39,7 +31,6 @@ public abstract class GeoNoteDatabase extends RoomDatabase {
                 instance = Room.databaseBuilder(context.getApplicationContext(),
                         GeoNoteDatabase.class,
                         DATABSE_NAME)
-                        .addMigrations(INSTANCE.migration)
                         .build();
             }
             return instance;

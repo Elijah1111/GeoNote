@@ -29,6 +29,9 @@ public class GeoNoteDrawerViewModel extends ViewModel {
     public void saveGeoNote(GeoNote geoNote){
         mGeoNoteRepository.updateGeoNote(geoNote);
     }
+    public void insertGeoNote(GeoNote geoNote){
+        mGeoNoteRepository.addGeoNote(geoNote);
+    }
 
 }
     /*private GeoNoteRepository mRepository;

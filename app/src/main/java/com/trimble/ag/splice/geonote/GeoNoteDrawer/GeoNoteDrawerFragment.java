@@ -27,7 +27,6 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
     protected GeonoteDrawerAdapter adapter;
     protected String[] Dataset;
     protected int[] Imageset;
-    private GeoNoteRepository mRepository;
 
     private GeoNoteExtension extension;
 
@@ -76,7 +75,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         layoutManager = new GridLayoutManager(getActivity(), 3);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter.addRepo(mRepository);
+        adapter.addViewModel(geoNoteDrawerViewModel);
 
         recyclerView.setAdapter(adapter);
 
