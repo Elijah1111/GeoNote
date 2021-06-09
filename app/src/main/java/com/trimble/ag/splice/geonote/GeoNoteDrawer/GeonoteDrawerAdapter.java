@@ -34,6 +34,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
     private int[] mImageSet;
     private GeoNoteRepository repository;
     protected GeoNoteExtension extension;
+    Button btnCam, btnMic;
 
     public void addRepo(GeoNoteRepository mRepository) {
         repository = mRepository;
@@ -60,9 +61,16 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
-                    addGeoNote(images[getAdapterPosition()], data[getAdapterPosition()]);
-                   // geoNoteDrawerFragment.addGeoNote(image[getAdapterPosition()], data[getAdapterPosition()]);
+                    if (data[getAdapterPosition()] == "Open Camera"){
+                        Intent intent = new intent();
+                        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivity(intent);
+                    }
+                    else {
+                        Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
+                        addGeoNote(images[getAdapterPosition()], data[getAdapterPosition()]);
+                        // geoNoteDrawerFragment.addGeoNote(image[getAdapterPosition()], data[getAdapterPosition()]);
+                    }
                 }
             });
             textView = (TextView) v.findViewById(R.id.note_name_text_view);
