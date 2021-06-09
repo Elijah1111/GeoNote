@@ -27,9 +27,10 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
     protected GeonoteDrawerAdapter adapter;
     protected String[] Dataset;
     protected int[] Imageset;
-    private GeoNoteRepository mRepository;
 
     private GeoNoteExtension extension;
+
+    private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
 
     public GeoNoteDrawerFragment() {
         // Required empty public constructor
@@ -48,7 +49,8 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         initItemset();
         adapter = new GeonoteDrawerAdapter(Dataset,Imageset);
         adapter.extension = extension;
-        mRepository = new GeoNoteRepository(getContext());
+        GeoNoteDrawerViewModelFactory factory = new GeoNoteDrawerViewModelFactory(requireContext());
+        geoNoteDrawerViewModel = new ViewModelProvider(this, factory).get(GeoNoteDrawerViewModel.class);
     }
 
     public void initItemset() {
@@ -73,7 +75,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         layoutManager = new GridLayoutManager(getActivity(), 3);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter.addRepo(mRepository);
+        adapter.addViewModel(geoNoteDrawerViewModel);
 
         recyclerView.setAdapter(adapter);
 

@@ -15,11 +15,26 @@ import com.trimble.ag.splice.geonote.GeoNote;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import kotlin.jvm.Synchronized;
+
 @Database(entities = {GeoNote.class}, version = 1)
 @TypeConverters(GeoNoteTypeConverter.class)
 public abstract class GeoNoteDatabase extends RoomDatabase {
-    public abstract GeoNoteDao GeoNoteDao();
 
+    public abstract GeoNoteDao GeoNoteDao();
+    private static final String DATABSE_NAME  = "geonote-data";
+    private static GeoNoteDatabase INSTANCE = null;
+    @Synchronized
+    public static GeoNoteDatabase getInstance(Context context){
+            GeoNoteDatabase instance =INSTANCE;
+            if(instance==null) {
+                instance = Room.databaseBuilder(context.getApplicationContext(),
+                        GeoNoteDatabase.class,
+                        DATABSE_NAME)
+                        .build();
+            }
+            return instance;
+        }
     // marking the instance as volatile to ensure atomic access to the variable
    // private static volatile GeoNoteDatabase INSTANCE;
     //private static final int NUMBER_OF_THREADS = 4;

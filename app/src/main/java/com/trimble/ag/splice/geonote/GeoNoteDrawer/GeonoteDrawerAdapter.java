@@ -18,19 +18,16 @@ import com.trimble.ag.splice.geonote.GeoNoteType;
 import com.trimble.ag.splice.geonote.R;
 import com.trimble.ag.splice.location.Location;
 
-import java.util.Objects;
-import java.util.zip.Inflater;
-
 public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdapter.ViewHolder>{
 
     private static final String TAG = "DrawerAdapter";
     private String[] mDataSet;
     private int[] mImageSet;
-    private GeoNoteRepository repository;
+    private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
     protected GeoNoteExtension extension;
 
-    public void addRepo(GeoNoteRepository mRepository) {
-        repository = mRepository;
+    public void addViewModel(GeoNoteDrawerViewModel geoNoteDrawerViewModel) {
+        this.geoNoteDrawerViewModel = geoNoteDrawerViewModel;
     }
 
 
@@ -42,14 +39,14 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private final ImageView imageView;
-        private GeoNoteRepository repository;
+        private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
         private GeoNoteExtension extension;
 
 
-        public ViewHolder(View v, GeoNoteRepository mRepository, int[] images, String[] data, Extension extension){
+        public ViewHolder(View v, GeoNoteDrawerViewModel geoNoteDrawerViewModel, int[] images, String[] data, Extension extension){
             super(v);
             this.extension = (GeoNoteExtension) extension;
-            repository =mRepository;
+            this.geoNoteDrawerViewModel =geoNoteDrawerViewModel;
             // Define click listener for the ViewHolder's View.
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,7 +107,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
             //TODO Pictures/audio
 
             // geoNoteDrawerViewModel.insert(geoNote);
-            repository.addGeoNote(geoNote);
+            geoNoteDrawerViewModel.insertGeoNote(geoNote);
         }
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)
@@ -128,7 +125,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.geonote_drawer_item, parent, false);
        // geoNoteDrawerFragment = new GeoNoteDrawerFragment();
-        return new ViewHolder(v,repository,mImageSet, mDataSet,extension);
+        return new ViewHolder(v, geoNoteDrawerViewModel,mImageSet, mDataSet,extension);
     }
 
     @Override
