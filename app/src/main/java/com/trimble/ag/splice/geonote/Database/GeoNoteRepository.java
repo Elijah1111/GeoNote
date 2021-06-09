@@ -16,8 +16,9 @@ import java.util.concurrent.Executors;
 import kotlin.jvm.Synchronized;
 
 public class GeoNoteRepository{
+    private GeoNoteDao mGeoNoteDao;
     private GeoNoteRepository(GeoNoteDao geoNoteDao){
-
+        mGeoNoteDao = geoNoteDao;
     }
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private static GeoNoteRepository INSTANCE = null;
@@ -30,6 +31,28 @@ public class GeoNoteRepository{
                 INSTANCE =instance;
             }
             return instance;
+    }
+    public LiveData<List<GeoNote>> getGeoNotes(){
+        return (mGeoNoteDao.getNotes());
+    }
+    public LiveData<GeoNote> getGeoNote(UUID id) {
+        return (mGeoNoteDao.getNote(id));
+
+    }
+    public void updateGeoNote(GeoNote geoNote){
+        executor.execute(()->{
+            mGeoNoteDao.updateGeoNote(geoNote);
+        });
+    }
+    public void deleteGeoNote(GeoNote geoNote){
+        executor.execute(()->{
+            mGeoNoteDao.deleteGeoNote(geoNote);
+        });
+    }
+    public void addGeoNote(GeoNote geoNote){
+        executor.execute(()->{
+            mGeoNoteDao.addGeoNote(geoNote);
+        });
     }
     /*private GeoNoteDao geoNoteDao;
     private ExecutorService executor = Executors.newSingleThreadExecutor();
