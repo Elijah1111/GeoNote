@@ -1,9 +1,12 @@
 package com.trimble.ag.splice.geonote.GeoNoteDrawer;
 
+import android.content.Intent;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -17,6 +20,12 @@ import com.trimble.ag.splice.geonote.GeoNoteExtension;
 import com.trimble.ag.splice.geonote.GeoNoteType;
 import com.trimble.ag.splice.geonote.R;
 import com.trimble.ag.splice.location.Location;
+import java.util.Objects;
+import java.util.zip.Inflater;
+
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+import static androidx.core.content.ContextCompat.startActivity;
+
 
 public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdapter.ViewHolder>{
 
@@ -25,6 +34,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
     private int[] mImageSet;
     private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
     protected GeoNoteExtension extension;
+    Button btnCam, btnMic;
 
     public void addViewModel(GeoNoteDrawerViewModel geoNoteDrawerViewModel) {
         this.geoNoteDrawerViewModel = geoNoteDrawerViewModel;
@@ -51,9 +61,16 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
-                    addGeoNote(images[getAdapterPosition()], data[getAdapterPosition()]);
-                   // geoNoteDrawerFragment.addGeoNote(image[getAdapterPosition()], data[getAdapterPosition()]);
+                    if (data[getAdapterPosition()] == "Open Camera"){
+                        Intent intent = new intent();
+                        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivity(intent);
+                    }
+                    else {
+                        Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
+                        addGeoNote(images[getAdapterPosition()], data[getAdapterPosition()]);
+                        // geoNoteDrawerFragment.addGeoNote(image[getAdapterPosition()], data[getAdapterPosition()]);
+                    }
                 }
             });
             textView = (TextView) v.findViewById(R.id.note_name_text_view);
@@ -93,6 +110,15 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                     break;
                 case "Hazard":
                     geoNoteType = GeoNoteType.HAZARD;
+                    break;
+                case "Record":
+                    //TODO: Do something for the record
+                    break;
+                case "Camera":
+                    //TODO: Do something
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    // start the image capture Intent
+                    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                     break;
                 default:
                     Log.w(TAG, "Invalid Icon Type");
