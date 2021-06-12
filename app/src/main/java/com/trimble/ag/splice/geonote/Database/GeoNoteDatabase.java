@@ -23,7 +23,7 @@ import kotlin.jvm.Synchronized;
 public abstract class GeoNoteDatabase extends RoomDatabase {
     private static final String TAG = "GeoNoteDatabase";
     public abstract GeoNoteDao GeoNoteDao();
-    private static final String DATABSE_NAME  = "geonoteDatabase";
+    private static final String DATABASE_NAME  = "geonotetesting";
     private static GeoNoteDatabase INSTANCE = null;
     @NonNull
     @Synchronized
@@ -33,7 +33,7 @@ public abstract class GeoNoteDatabase extends RoomDatabase {
                 Log.i(TAG, "Null Database instance encountered");
                 instance = Room.databaseBuilder(context.getApplicationContext(),
                         GeoNoteDatabase.class,
-                        DATABSE_NAME)
+                        DATABASE_NAME)
                         .build();
                 INSTANCE = instance;
                 Log.i(TAG, "Reset Database INSTANCE");

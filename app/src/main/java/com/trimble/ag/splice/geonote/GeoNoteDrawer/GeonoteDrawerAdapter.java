@@ -20,9 +20,9 @@ import com.trimble.ag.splice.location.Location;
 
 public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdapter.ViewHolder>{
 
-    private static final String TAG = "DrawerAdapter";
-    private String[] mDataSet;
-    private int[] mImageSet;
+    private static final String TAG = "GeoNoteDrawerAdapter";
+    private final String[] mDataSet;
+    private final int[] mImageSet;
     private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
     protected GeoNoteExtension extension;
 
@@ -39,8 +39,8 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private final ImageView imageView;
-        private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
-        private GeoNoteExtension extension;
+        private final GeoNoteDrawerViewModel geoNoteDrawerViewModel;
+        private final GeoNoteExtension extension;
 
 
         public ViewHolder(View v, GeoNoteDrawerViewModel geoNoteDrawerViewModel, int[] images, String[] data, Extension extension){
