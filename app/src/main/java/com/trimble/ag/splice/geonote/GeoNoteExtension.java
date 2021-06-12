@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.trimble.ag.splice.Extension;
 import com.trimble.ag.splice.SpliceSystem;
 import com.trimble.ag.splice.geonote.GeoNoteDrawer.GeoNoteDrawerFragment;
+import com.trimble.ag.splice.geonote.GeoNoteMap.GeoNoteFragment;
 import com.trimble.ag.splice.location.Location;
 import com.trimble.ag.splice.location.LocationListener;
 import com.trimble.ag.splice.location.LocationSubsystem;

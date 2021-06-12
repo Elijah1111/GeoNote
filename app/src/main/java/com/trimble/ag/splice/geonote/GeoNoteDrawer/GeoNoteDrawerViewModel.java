@@ -21,7 +21,7 @@ public class GeoNoteDrawerViewModel extends ViewModel {
         mGeoNoteRepository =geoNoteRepository;
     }
     private MutableLiveData<UUID> geoNoteIDLiveData = new MutableLiveData<UUID>();
-    LiveData<GeoNote> geoNoteLiveData = Transformations.switchMap(geoNoteIDLiveData, geoNoteID-> mGeoNoteRepository.getGeoNote(geoNoteID));
+    LiveData<List<GeoNote>> geoNoteLiveData = Transformations.switchMap(geoNoteIDLiveData, geoNoteID-> mGeoNoteRepository.getGeoNotes());
 
     public void loadGeoNote(UUID geoNoteId){
         geoNoteIDLiveData.setValue(geoNoteId);
