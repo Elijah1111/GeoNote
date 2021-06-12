@@ -16,8 +16,8 @@ import java.util.UUID;
 public interface GeoNoteDao {
     @Query("SELECT * FROM geoNote")
     LiveData<List<GeoNote>> getNotes();
-    @Query("SELECT * FROM geonote WHERE uid=(:id)")
-    LiveData<GeoNote> getNote(UUID id);
+    @Query("SELECT * FROM geonote WHERE uid=(:arg0)")
+    LiveData<GeoNote> getNote(UUID arg0);
     @Update
     void updateGeoNote(GeoNote geoNote);
     @Insert

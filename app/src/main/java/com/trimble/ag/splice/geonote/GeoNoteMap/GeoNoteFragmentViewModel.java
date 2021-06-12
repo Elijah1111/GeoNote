@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.trimble.ag.splice.geonote.Database.GeoNoteRepository;
 import com.trimble.ag.splice.geonote.GeoNote;
 
+import java.util.List;
 import java.util.UUID;
 
 public class GeoNoteFragmentViewModel extends ViewModel {
@@ -16,7 +17,7 @@ public class GeoNoteFragmentViewModel extends ViewModel {
         mGeoNoteRepository =geoNoteRepository;
     }
     private MutableLiveData<UUID> geoNoteIDLiveData = new MutableLiveData<UUID>();
-    LiveData<GeoNote> geoNoteLiveData = Transformations.switchMap(geoNoteIDLiveData, geoNoteID-> mGeoNoteRepository.getGeoNote(geoNoteID));
+    LiveData<List<GeoNote>> geoNoteLiveData = Transformations.switchMap(geoNoteIDLiveData, geoNoteID-> mGeoNoteRepository.getGeoNotes());
 
     public void loadGeoNote(UUID geoNoteId){
         geoNoteIDLiveData.setValue(geoNoteId);

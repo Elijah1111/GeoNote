@@ -1,6 +1,7 @@
 package com.trimble.ag.splice.geonote.Database;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -17,21 +18,25 @@ import java.util.concurrent.Executors;
 
 import kotlin.jvm.Synchronized;
 
-@Database(entities = {GeoNote.class}, version = 1)
+@Database(entities = {GeoNote.class}, version = 1, exportSchema = false)
 @TypeConverters(GeoNoteTypeConverter.class)
 public abstract class GeoNoteDatabase extends RoomDatabase {
-
+    private static final String TAG = "GeoNoteDatabase";
     public abstract GeoNoteDao GeoNoteDao();
-    private static final String DATABSE_NAME  = "geonote-data";
+    private static final String DATABSE_NAME  = "geonoteDatabase";
     private static GeoNoteDatabase INSTANCE = null;
+    @NonNull
     @Synchronized
     public static GeoNoteDatabase getInstance(Context context){
             GeoNoteDatabase instance =INSTANCE;
             if(instance==null) {
+                Log.i(TAG, "Null Database instance encountered");
                 instance = Room.databaseBuilder(context.getApplicationContext(),
                         GeoNoteDatabase.class,
                         DATABSE_NAME)
                         .build();
+                INSTANCE = instance;
+                Log.i(TAG, "Reset Database INSTANCE");
             }
             return instance;
         }

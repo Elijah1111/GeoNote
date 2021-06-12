@@ -2,7 +2,9 @@ package com.trimble.ag.splice.geonote.Database;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
@@ -16,19 +18,23 @@ import java.util.concurrent.Executors;
 import kotlin.jvm.Synchronized;
 
 public class GeoNoteRepository{
+    private static final String TAG = "GeoNoteRepo";
     private GeoNoteDao mGeoNoteDao;
     private GeoNoteRepository(GeoNoteDao geoNoteDao){
         mGeoNoteDao = geoNoteDao;
     }
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private static GeoNoteRepository INSTANCE = null;
+    @NonNull
     @Synchronized
     public static GeoNoteRepository getInstance(Context context){
             GeoNoteRepository instance =INSTANCE;
             if(instance==null){
+                Log.i(TAG, "Null Repo instance encountered");
                 GeoNoteDatabase database = GeoNoteDatabase.getInstance(context);
                 instance = new GeoNoteRepository(database.GeoNoteDao());
                 INSTANCE =instance;
+                Log.i(TAG, "Reset Repo INSTANCE");
             }
             return instance;
     }
