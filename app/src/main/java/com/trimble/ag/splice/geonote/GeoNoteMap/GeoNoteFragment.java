@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +31,7 @@ import com.trimble.ag.toolkit.ui.SpliceFragment;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Observer;
 
 public class GeoNoteFragment extends SpliceFragment{
     private static final String TAG = "GeoNoteFragment";
@@ -52,6 +52,7 @@ public class GeoNoteFragment extends SpliceFragment{
     private GoogleMap googleMap;
 
     private void updateUI(List<GeoNote> geoNotes){
+        Log.d(TAG, "Update with "+ geoNotes.size());
         mAdapter = new GeoNoteAdapter(geoNotes);
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -67,6 +68,7 @@ public class GeoNoteFragment extends SpliceFragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView() called");
         View rootView = getLayoutInflater(inflater).inflate(R.layout.geonote, container, false);
         mMapView =(MapView) rootView.findViewById(R.id.mapview);
         mRecyclerView=(RecyclerView) rootView.findViewById(R.id.your_geonote_list_recycler_view);
@@ -105,8 +107,9 @@ public class GeoNoteFragment extends SpliceFragment{
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "onViewCreated() called");
         geoNoteFragmentViewModel.geoNoteLiveData.observe(
                 getViewLifecycleOwner(), geoNotes -> {
                     Log.i(TAG, "Got GeoNotes "+geoNotes.size());

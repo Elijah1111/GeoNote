@@ -20,9 +20,9 @@ public class GeoNote {
     @ColumnInfo(name = "type")
     public GeoNoteType type = null;
     @ColumnInfo(name = "pictures")
-    public String[] pictures = {"", ""};//path to stored pictures
+    public String pictures = "pics";//path to stored pictures
     @ColumnInfo(name = "audio")
-    public String audio = "";//path to audio clip
+    public String audio = "sound";//path to audio clip
     @ColumnInfo(name = "icon")
     public int icon = 0;
     @ColumnInfo(name = "position")
@@ -46,7 +46,7 @@ public class GeoNote {
 
     public void addImages(String p1, String p2){
         //TODO make sure these exist
-        pictures[0] = p1;
-        pictures[1] = p2;
+        pictures = p1;
+        //pictures[1] = p2;
     }
 }

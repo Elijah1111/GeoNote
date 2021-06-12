@@ -30,7 +30,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
 
     private GeoNoteExtension extension;
 
-    private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
+    private static GeoNoteDrawerViewModel geoNoteDrawerViewModel;
 
     public GeoNoteDrawerFragment() {
         // Required empty public constructor
