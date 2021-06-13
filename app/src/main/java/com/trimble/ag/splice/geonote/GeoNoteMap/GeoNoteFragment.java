@@ -1,6 +1,7 @@
 package com.trimble.ag.splice.geonote.GeoNoteMap;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -43,13 +44,25 @@ public class GeoNoteFragment extends SpliceFragment{
 
 
     //protected MapView mMapView;
-    protected RecyclerView mRecyclerView;
+    protected static List<GeoNote> geoNotes;
+    protected static RecyclerView mRecyclerView;
     protected LinearLayoutManager layoutManager;
-    protected GeoNoteAdapter mAdapter;
-    private GeoNoteFragmentViewModel geoNoteFragmentViewModel;
-   // private GoogleMap googleMap;
+    protected static GeoNoteAdapter mAdapter;
+    private static GeoNoteDetailsAdapter detailsAdapter;
+    private static GeoNoteFragmentViewModel geoNoteFragmentViewModel;
 
-    private void updateUI(List<GeoNote> geoNotes){
+    public static void clickedGeonote(GeoNote geoNote) {
+        detailsAdapter = new GeoNoteDetailsAdapter(geoNote);
+        detailsAdapter.addViewModel(geoNoteFragmentViewModel);
+        mRecyclerView.setAdapter(detailsAdapter);
+    }
+
+    public static void backToList() {
+        updateUI(geoNotes);
+    }
+    // private GoogleMap googleMap;
+
+    private static void updateUI(List<GeoNote> geoNotes){
         Log.d(TAG, "Update with "+ geoNotes.size());
         mAdapter = new GeoNoteAdapter(geoNotes);
         mRecyclerView.setAdapter(mAdapter);
@@ -111,6 +124,7 @@ public class GeoNoteFragment extends SpliceFragment{
         geoNoteFragmentViewModel.getGeoNoteLiveData().observe(
                 getViewLifecycleOwner(), geoNotes -> {
                     Log.i(TAG, "Got GeoNotes " + geoNotes.size());
+                    this.geoNotes = geoNotes;
                     updateUI(geoNotes);
                 }
         );
