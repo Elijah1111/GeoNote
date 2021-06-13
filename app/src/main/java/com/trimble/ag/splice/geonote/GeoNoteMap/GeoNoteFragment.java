@@ -1,37 +1,28 @@
 package com.trimble.ag.splice.geonote.GeoNoteMap;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.trimble.ag.splice.Extension;
 import com.trimble.ag.splice.geonote.GeoNote;
 import com.trimble.ag.splice.geonote.R;
-import com.trimble.ag.splice.geonote.databinding.GeonoteBinding;
 import com.trimble.ag.toolkit.ui.SpliceFragment;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Observer;
 
 public class GeoNoteFragment extends SpliceFragment{
     private static final String TAG = "GeoNoteFragment";
@@ -39,17 +30,24 @@ public class GeoNoteFragment extends SpliceFragment{
     public GeoNoteFragment() {
         // Required empty public constructor
     }
+    private WebViewClient webViewClient;
+    private WebView webView;
+    private Bundle webViewBundle;
+    private String urlPrefix = "file:///android_asset/";
 
-    public GeoNoteFragment(Extension extension) {
+    @SuppressLint("ValidFragment")
+    public GeoNoteFragment(Extension extension){
         super(extension);
+        urlPrefix = "http://localhost:8081/com.trimble.ag.splice.geonote.GeoNoteExtension/";
     }
 
-    protected MapView mMapView;
+
+    //protected MapView mMapView;
     protected RecyclerView mRecyclerView;
     protected LinearLayoutManager layoutManager;
     protected GeoNoteAdapter mAdapter;
     private GeoNoteFragmentViewModel geoNoteFragmentViewModel;
-    private GoogleMap googleMap;
+   // private GoogleMap googleMap;
 
     private void updateUI(List<GeoNote> geoNotes){
         Log.d(TAG, "Update with "+ geoNotes.size());
@@ -61,46 +59,46 @@ public class GeoNoteFragment extends SpliceFragment{
     public void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
-        GeoNoteFragmentViewModelFactory factory = new GeoNoteFragmentViewModelFactory(requireContext());
+        setRetainInstance(true);
+        GeoNoteFragmentViewModelFactory factory = new GeoNoteFragmentViewModelFactory(getActivity());
         geoNoteFragmentViewModel = new ViewModelProvider(this, factory).get(GeoNoteFragmentViewModel.class);
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        webViewBundle = new Bundle();
+        webView.saveState(webViewBundle);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView() called");
         View rootView = getLayoutInflater(inflater).inflate(R.layout.geonote, container, false);
-        mMapView =(MapView) rootView.findViewById(R.id.mapview);
+        webView =(WebView) rootView.findViewById(R.id.webView);
         mRecyclerView=(RecyclerView) rootView.findViewById(R.id.your_geonote_list_recycler_view);
-        mMapView.onCreate(savedInstanceState);
 
-        mMapView.onResume(); // needed to get the map to display immediately
 
         layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                googleMap = mMap;
 
-                // For showing a move to my location button
-                googleMap.setMyLocationEnabled(true);
-
-                // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        if(webView != null) {
+            if(webViewClient == null) {
+                webViewClient = new WebViewClient();
             }
-        });
+            webView.setWebViewClient(webViewClient);
+            webView.getSettings().setJavaScriptEnabled(true);
+            if(webViewBundle == null) {
+                String url = urlPrefix+"www/geonote_map.html";
+                Log.d("aea", "loading webview from url: "+url);
+                webView.loadUrl(url);
+            }
+            else {
+                webView.restoreState(webViewBundle);
+            }
+        }
 
         updateUI(Collections.emptyList());
         return rootView;
@@ -110,36 +108,35 @@ public class GeoNoteFragment extends SpliceFragment{
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated() called");
-        geoNoteFragmentViewModel.geoNoteLiveData.observe(
+        geoNoteFragmentViewModel.getGeoNoteLiveData().observe(
                 getViewLifecycleOwner(), geoNotes -> {
-                    Log.i(TAG, "Got GeoNotes "+geoNotes.size());
+                    Log.i(TAG, "Got GeoNotes " + geoNotes.size());
                     updateUI(geoNotes);
                 }
-                );
+        );
     }
+    public void evaluateJavascript(String js) {
+        webView.evaluateJavascript(js, null);
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        mMapView.onPause();
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mMapView.onLowMemory();
+
     }
 }
 

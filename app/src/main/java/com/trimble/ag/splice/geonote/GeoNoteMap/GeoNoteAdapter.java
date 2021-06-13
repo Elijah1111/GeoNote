@@ -1,14 +1,14 @@
 package com.trimble.ag.splice.geonote.GeoNoteMap;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trimble.ag.splice.geonote.GeoNote;
+import com.trimble.ag.splice.geonote.R;
 import com.trimble.ag.splice.geonote.databinding.GeonoteListItemBinding;
 
 import java.util.List;
@@ -21,9 +21,12 @@ public class GeoNoteAdapter extends RecyclerView.Adapter<GeoNoteHolder> {
 
     @Override
     public GeoNoteHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        GeonoteListItemBinding binding = GeonoteListItemBinding
-                .inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new GeoNoteHolder(binding);
+        // Create a new view.
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.geonote_list_item, parent, false);
+        /*GeonoteListItemBinding binding = GeonoteListItemBinding
+                .inflate(LayoutInflater.from(parent.getContext()), parent, false);*/
+        return new GeoNoteHolder(v);
     }
 
     @Override

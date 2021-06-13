@@ -1,24 +1,15 @@
 package com.trimble.ag.splice.geonote;
 
 import android.content.Context;
-import android.database.CrossProcessCursor;
-import android.graphics.drawable.Drawable;
 
-import androidx.lifecycle.Observer;
 import androidx.room.Room;
-
-import com.trimble.ag.splice.geonote.Database.GeoNoteDao;
-import com.trimble.ag.splice.geonote.Database.GeoNoteDatabase;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.List;
 
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
