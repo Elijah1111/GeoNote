@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trimble.ag.splice.Extension;
-import com.trimble.ag.splice.geonote.Database.GeoNoteRepository;
 import com.trimble.ag.splice.geonote.GeoNote;
 import com.trimble.ag.splice.geonote.GeoNoteExtension;
 import com.trimble.ag.splice.geonote.GeoNoteType;
@@ -102,12 +101,15 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
 
             Location location = extension.getCurrentLocation();
             Log.w(TAG, "Location: "+location.getLatitude()+", "+location.getLongitude());
-            GeoNote geoNote   = new GeoNote(name,drawable,geoNoteType,
-                    location.getLatitude(),location.getLongitude());
+            GeoNote geoNote   = new GeoNote();
+            geoNote.setName(name);
+            geoNote.setIcon(drawable);
+            geoNote.setType(geoNoteType);
+            geoNote.setPos(new double[]{location.getLatitude(), location.getLongitude()});
             //TODO Pictures/audio
 
             // geoNoteDrawerViewModel.insert(geoNote);
-            geoNoteDrawerViewModel.insertGeoNote(geoNote);
+            geoNoteDrawerViewModel.addGeoNote(geoNote);
         }
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)

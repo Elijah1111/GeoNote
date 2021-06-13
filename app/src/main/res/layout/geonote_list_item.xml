@@ -30,6 +30,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="GeoNote Location"
+        android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/geonote_image_view"
         app:layout_constraintHorizontal_bias="0.0"

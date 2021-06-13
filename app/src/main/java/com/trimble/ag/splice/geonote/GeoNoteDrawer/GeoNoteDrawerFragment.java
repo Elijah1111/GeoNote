@@ -1,6 +1,5 @@
 package com.trimble.ag.splice.geonote.GeoNoteDrawer;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,15 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDirections;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.trimble.ag.splice.Extension;
-import com.trimble.ag.splice.geonote.Database.GeoNoteRepository;
-import com.trimble.ag.splice.geonote.GeoNote;
-import com.trimble.ag.splice.geonote.GeoNoteDrawer.GeonoteDrawerAdapter;
 import com.trimble.ag.splice.geonote.GeoNoteExtension;
-import com.trimble.ag.splice.geonote.GeoNoteType;
 import com.trimble.ag.splice.geonote.R;
 import com.trimble.ag.toolkit.ui.SpliceFragment;
 
@@ -49,7 +43,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         initItemset();
         adapter = new GeonoteDrawerAdapter(Dataset,Imageset);
         adapter.extension = extension;
-        GeoNoteDrawerViewModelFactory factory = new GeoNoteDrawerViewModelFactory(requireContext());
+        GeoNoteDrawerViewModelFactory factory = new GeoNoteDrawerViewModelFactory(getActivity());
         geoNoteDrawerViewModel = new ViewModelProvider(this, factory).get(GeoNoteDrawerViewModel.class);
     }
 

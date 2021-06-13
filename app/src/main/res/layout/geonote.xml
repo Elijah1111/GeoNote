@@ -7,10 +7,10 @@
     android:showDividers="middle"
     android:orientation="horizontal"
     android:baselineAligned="false">
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapview"
+    <WebView
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:id="@+id/webView"
         android:layout_weight="3"/>
 <!--    <FrameLayout
         android:id="@+id/var_fill_view"
