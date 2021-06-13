@@ -21,6 +21,8 @@ data class GeoNote(
 
     var pos: DoubleArray = DoubleArray(2) //The Latitude and Longitude
     ) {
+    val photoFileName
+    get() = "IMG_$uid.jpg"
     constructor(Note: String, crop: Int, animal: GeoNoteType, arg4: Double, arg5: Double) : this() {
         name = Note
         icon = crop
