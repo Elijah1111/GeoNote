@@ -1,0 +1,807 @@
+
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Vehicle Sync</title>
+
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css' rel='stylesheet' />
+
+<style type=text/css>
+
+* {
+  box-sizing: border-box;
+}
+
+.title {
+	margin: 0px;
+	padding-left: 8px;
+	display:block;
+	width:auto;
+	background-color: #0f2d58;
+	color: white;
+	height: 50px;
+	font-weight: bold;
+	line-height: 50px;
+	font-size: 24px;
+}
+.section {
+	margin: 8px 0px 8px 12px;
+}	
+.table {
+	margin: 8px 0px 8px 36px;
+	border-spacing: 0px;
+}
+.column {
+  float: left;
+  padding: 10px;
+}
+
+.left {
+  width: 40%;
+}
+
+.right {
+  width: 60%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.button1 {
+  margin-left: 24px;
+  padding: 4px 8px 4px 8px;
+  border: 1px solid white;
+  background: gray;
+  font-size: 18px;
+  color: white;
+  width: 100px;
+}
+
+.button2 {
+  margin-right: 24px;
+  padding: 4px 24px 4px 24px;
+  border: 1px solid gray;
+  background-color: #0f2d58;
+  font-size: 18px;
+  color: white;
+}
+
+.header {
+  margin: 16px 24px 0px 24px;
+  font-size: 14px;
+  color: gray;
+}
+.value {
+  margin: 4px 24px 4px 24px;
+}
+.value2 {
+  margin: 4px 24px 4px 48px;
+}
+
+input[type=text] {
+  width: 100%;
+  padding: 6px 12px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.select-css {
+	display: block;
+	font-size: 16px;
+	font-weight: 700;
+	color: #444;
+	line-height: 1.3;
+	padding: .6em 1.4em .5em .8em;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	margin: 0;
+	border: 1px solid #aaa;
+	box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
+	border-radius: .5em;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	background-color: #fff;
+	background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
+	  linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%);
+	background-repeat: no-repeat, repeat;
+	background-position: right .7em top 50%, 0 0;
+	background-size: .65em auto, 100%;
+}
+.select-css::-ms-expand {
+	display: none;
+}
+.select-css:hover {
+	border-color: #888;
+}
+.select-css:focus {
+	border-color: #aaa;
+	box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+	box-shadow: 0 0 0 3px -moz-mac-focusring;
+	color: #222;
+	outline: none;
+}
+.select-css option {
+	font-weight:normal;
+}
+
+#map { position: absolute; top: 50px; bottom: 0; width: 100%; }
+
+.setting-label {
+  padding-left: 12px;
+  padding-bottom: 16px
+}
+</style>
+
+
+<script>
+
+function addTableRow(tableName, col1, col2, col3, recognized) {
+}
+
+function addSessionMembers(members) {
+	var table = document.getElementById("sessions");
+	var row = table.insertRow(-1);
+	var cell = row.insertCell(0);
+	cell = row.insertCell(1);
+	cell.colSpan = "2";
+	cell.innerHTML = str;
+}
+
+function getMemberString(members) {
+	var str = "(";
+	var prefix = "";
+   for(i=0; i<members.length; i++) {
+		str += prefix;
+		if(members[i].r) {
+			str += "<b>";
+		}
+		str += members[i].name;
+		if(members[i].r) {
+			str += "</b>";
+		}
+		prefix = ", ";
+   }
+	str += ")";
+	return str;
+}
+function addOperator(operator, model, name, recognized) {
+	var table = document.getElementById("operators");
+	var row = table.insertRow(-1);
+	var checked = "";
+	if(recognized) {
+		row.style.fontWeight = "bold";
+		checked = "checked";
+	}
+	var cell = row.insertCell(0);
+	cell.innerHTML = "<input id=\"operator_"+operator+"\" type=\"checkbox\" "+checked+">";
+	cell = row.insertCell(1);
+	cell.innerHTML = operator;
+	cell.style.paddingLeft = "12px";
+	cell = row.insertCell(2);
+	cell.innerHTML = name;
+	cell.style.paddingLeft = "12px";
+	row = table.insertRow(-1);
+	row.marginTop="4px";
+	row.marginBottom="12px";
+	cell = row.insertCell(0);
+	cell = row.insertCell(1);
+	cell = row.insertCell(2);
+	cell.innerHTML = model;
+	cell.style.paddingLeft = "12px";
+	cell.style.paddingTop = "2px";
+	cell.style.paddingBottom = "8px";
+	cell.style.fontSize = "14px";
+}
+
+function toggleOperator(operator) {
+	var checkbox = document.getElementById("operator_"+operator);
+	if(checkbox != null) {
+		checkbox.checked = !checkbox.checked;
+	}
+}
+
+function selectField(fieldValue) {
+	document.getElementById('selectField').value=fieldValue;
+}
+
+
+function addSession(session, field, task, recognized, members, selected) {
+	var table = document.getElementById("sessions");
+	var row = table.insertRow(-1);
+	var cell = row.insertCell(0);
+	cell.innerHTML = "<input type=\"radio\" name=\"optsession\" "+selected+">";
+	cell = row.insertCell(1);
+	if(recognized) {
+		cell.style.fontWeight = "bold";
+	}
+	cell.innerHTML = session;
+	cell.style.paddingLeft = "12px";
+	cell = row.insertCell(2);
+	cell.innerHTML = getMemberString(members);
+	cell.style.paddingLeft = "12px";
+	row = table.insertRow(-1);
+	row.marginTop="4px";
+	cell = row.insertCell(0);
+	cell = row.insertCell(1);
+	cell.colSpan="2";
+	cell.innerHTML = field;
+	cell.style.paddingLeft = "12px";
+	row = table.insertRow(-1);
+	row.marginTop="4px";
+	row.marginBottom="12px";
+	cell = row.insertCell(0);
+	cell = row.insertCell(1);
+	cell.colSpan="2";
+	cell.innerHTML = task;
+	cell.style.paddingLeft = "12px";
+	cell.style.paddingTop = "2px";
+	cell.style.paddingBottom = "16px";
+	cell.style.fontSize = "14px";
+}
+
+function enableEvent(event) {
+	var opacity = "0.5";
+	var enabled = false;
+	if(event.target.checked) {
+		opacity = "1.0";
+		enabled = true;
+	}
+	Array.from(document.getElementsByClassName("setting-label")).forEach(
+			function(element, index, array) {
+			element.style.opacity = opacity;
+			}
+			);
+	Array.from(document.getElementsByClassName("setting")).forEach(
+			function(element, index, array) {
+			element.disabled = !enabled;
+			}
+			);
+}
+
+function taskCoverageEvent(event) {
+	var options = document.getElementById('task_coverage_options');
+			if(event.target.checked) {
+				options.style.display="block";
+			}
+			else {
+				options.style.display="none";
+			}
+}
+
+function onload() {
+	addOperator("Aran", "Case Puma 140", "Old Red", true);
+	addOperator("Rod", "Case Magnum 860", "Big Red", true);
+	addOperator("Chris", "New Holland", "Blue", false);
+
+	var members = [{name:"Aran", r: true}, {name:"Rod", r: true}, {name: "Chris", r: false}];
+	addSession("ATeam", "Field 41", "Pea Harvest", true, members, "checked");
+	members = [{name:"Clyde", r: false}, {name:"Joe", r: false}, {name: "Sebastian", r: false}];
+	addSession("Clydes", "Other farm", "Pea Harvest", false, members, "");
+
+	const enable = document.getElementById('enable');
+	enable.addEventListener('change', enableEvent);
+
+	const task_coverage = document.getElementById('task_coverage');
+	task_coverage.addEventListener('change', taskCoverageEvent);
+}
+
+
+function setMode(mode) {
+	if(mode == "find") {
+		document.getElementById("mode_find").style.opacity = "0.5";
+		document.getElementById("mode_create").style.opacity = "1.0";
+		document.getElementById("create").style.display="none";
+		document.getElementById("find").style.display="block";
+		document.getElementById("settings").style.display="none";
+	}
+   else if(mode == "create") {
+		document.getElementById("mode_find").style.opacity = "1.0";
+		document.getElementById("mode_create").style.opacity = "0.5";
+		document.getElementById("create").style.display="block";
+		document.getElementById("find").style.display="none";
+		document.getElementById("settings").style.display="none";
+   }
+   else {
+		document.getElementById("mode_find").style.opacity = "1.0";
+		document.getElementById("mode_create").style.opacity = "1.0";
+		document.getElementById("create").style.display="none";
+		document.getElementById("find").style.display="none";
+		document.getElementById("settings").style.display="block";
+	}
+}
+
+function setModeFind() {
+	setMode("find");
+}
+
+function setModeCreate() {
+	setMode("create");
+}
+
+function setModeSettings() {
+	setMode("settings");
+}
+
+function joinSession() {
+}
+
+function updateLocation(lat, lon) {
+	document.getElementById("currentLocation").innerHTML = "("+lat+", "+lon+")";
+}
+
+</script>
+
+</head>
+
+<body style="margin:0; font-size: large; font-family: Arial, Helvetica, sans-serif" onload="onload();">
+
+<div class="title">Vehicle Sync
+<button class="button1" id="mode_find" onclick="setModeFind()" style="opacity: 0.5">Find</button>
+<button class="button1" id="mode_create" onclick="setModeCreate()">Create</button>
+<span id="currentLocation" style="margin-left: 48px">waiting for location</span>
+<img src="ic_gear.svg" width="36" height="36" style="float: right; margin: 6px 16px 8px 8px" onclick="setModeSettings()" />
+</div>
+<div class="row">
+<div class="column left">
+   <div id="create" style="display: none">
+	<div class="section">Invite Nearby Operators</div>
+	<form>
+	<table id="operators" class="table"></table>
+	<div class="header">Field</div>
+	<div class="value">
+	<select id="selectField" class="select-css">
+		<option value="1">Denolans</option>
+		<option value="2">School Block</option>
+		<option value="3" selected>Ingrams</option>
+		<option value="4">Field 41</option>
+	</select>
+	</div>
+	<div class="header">Operation</div>
+	<div class="value">
+	<select class="select-css">
+		<option value="any">Any</option>
+		<option value="harvesting" selected>Harvesting</option>
+		<option value="mapping">Mapping</option>
+		<option value="planting">Planting</option>
+		<option value="seeding">Seeding</option>
+		<option value="slurry">Slurry</option>
+		<option value="spraying">Spraying</option>
+		<option value="spreading">Spreading</option>
+		<option value="subsurface_drainage">Subsurface Drainage</option>
+		<option value="surface_drainage">Surface Drainage</option>
+		<option value="swathing">Swathing</option>
+		<option value="tilling">Tilling</option>
+	</select>
+	</div>
+	<div class="header">Task</div>
+	<div class="value">
+	<input type="text" value="Pea Harvest"></input>
+	</form>
+	</div>
+
+	<button class="button2" id="start" onclick="createSession()" style="float: right;">Start</button>
+   </div>
+
+   <div id="find">
+	<div class="section">Join Nearby Session</div>
+	<table id="sessions" class="table"></table>
+	<button class="button2" id="join" onclick="joinSession()" style="float: right;">Join</button>
+   </div>
+
+   <div id="settings" style="display: none">
+	<div class="value"><input id="enable" type="checkbox" checked /><span style="padding-left: 12px; padding-bottom: 16px;">Enable Vehicle Sync</span></div>
+	<div class="header">Friends</div>
+	<div class="value"><input class="setting" type="checkbox" /><span class="setting-label" >Automatically accept join requests from friends</span></div>
+	<div class="value"><input class="setting" type="checkbox" /><span class="setting-label" >Automatically accept invitations from friends</span></div>
+	<div class="header">Sync</div>
+	<div class="value"><input type="checkbox" checked disabled /><span style="padding-left: 12px; padding-bottom: 16px;opacity:0.5" >Locations</span></div>
+	<div class="value"><input class="setting" type="checkbox" /><span class="setting-label" >Boundaries and guidance lines</span></div>
+	<div class="value"><input id="task_coverage" class="setting" type="checkbox" /><span class="setting-label" >Task coverage</span></div>
+	<div id="task_coverage_options" style="display:none;">
+	<div class="value2"><input class="setting" type="radio" name="sync_task" checked /><span class="setting-label" >Approximate coverage area (low bandwidth)</span></div>
+	<div class="value2"><input class="setting" type="radio"name="sync_task" /><span class="setting-label" >Actual coverage area (medium bandwidth)</span></div>
+	<div class="value2"><input class="setting" type="radio" name="sync_task" /><span class="setting-label" >Full task coverage (high bandwidth)</span></div>
+	</div>
+	<button class="button2" id="save" onclick="saveSettings()" style="float: right;margin-top: 16px;">Save</button>
+   </div>
+
+</div>
+
+<div class="column right">
+<div id="map"></div>
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiYXJhbmFuZGVyc29uIiwiYSI6ImNrM2MyMDNpaTB1MmYzY28xeXlhN3ZzazkifQ.vjJcolLaba2_Q1U8VEFrhA';
+var map = new mapboxgl.Map({
+container: 'map',
+zoom: 18,
+center: [-104.99816409375, 40.29789151562500],
+style: 'mapbox://styles/mapbox/satellite-v9'
+});
+
+
+map.on('load', function () {
+ 
+// field boundary fill 
+
+map.addLayer({
+'id': 'field_41',
+'type': 'fill',
+'source': {
+'type': 'geojson',
+'data': {
+'type': 'Feature',
+'geometry': {
+'type': 'Polygon',
+'coordinates': [[
+
+[-104.998632, 40.297446],
+[-104.99866499999999, 40.297458],
+[-104.998666, 40.297517],
+[-104.998666, 40.297568999999996],
+[-104.998666, 40.297621],
+[-104.998666, 40.297672],
+[-104.998666, 40.297723999999995],
+[-104.998666, 40.297776],
+[-104.998666, 40.297827999999996],
+[-104.998666, 40.297878999999995],
+[-104.998666, 40.297931],
+[-104.998666, 40.297982999999995],
+[-104.998666, 40.298034],
+[-104.99866399999999, 40.298069999999996],
+[-104.998656, 40.298105],
+[-104.998643, 40.298139],
+[-104.998626, 40.298172],
+[-104.998604, 40.298204],
+[-104.99857499999999, 40.298234],
+[-104.99853999999999, 40.298259],
+[-104.998499, 40.298279],
+[-104.998452, 40.298292],
+[-104.998403, 40.298297],
+[-104.99835399999999, 40.298293],
+[-104.998269, 40.298275],
+[-104.998228, 40.298268],
+[-104.998187, 40.298263999999996],
+[-104.998071, 40.29826],
+[-104.99795499999999, 40.298255999999995],
+[-104.997839, 40.298252],
+[-104.997794, 40.298249],
+[-104.997748, 40.298241999999995],
+[-104.997704, 40.298231],
+[-104.997661, 40.298218],
+[-104.99762, 40.2982],
+[-104.997582, 40.298179999999995],
+[-104.997547, 40.298154],
+[-104.997519, 40.298123],
+[-104.997501, 40.298088],
+[-104.99749299999999, 40.298051],
+[-104.997489, 40.297984],
+[-104.997484, 40.297917],
+[-104.99748, 40.29785],
+[-104.99747599999999, 40.297782999999995],
+[-104.997472, 40.297716],
+[-104.997551, 40.297681999999995],
+[-104.99761099999999, 40.297669],
+[-104.997671, 40.297655999999996],
+[-104.997731, 40.297643],
+[-104.99779199999999, 40.29763],
+[-104.997852, 40.297616],
+[-104.997912, 40.297602999999995],
+[-104.99797199999999, 40.29759],
+[-104.998032, 40.297577],
+[-104.998092, 40.297564],
+[-104.99815199999999, 40.297551],
+[-104.998212, 40.297537999999996],
+[-104.998272, 40.297523999999996],
+[-104.99833199999999, 40.297511],
+[-104.998392, 40.297498],
+[-104.998452, 40.297484999999995],
+[-104.99851199999999, 40.297472],
+[-104.998572, 40.297458999999996],
+[-104.998632, 40.297446],
+
+]]
+}
+}
+},
+'layout': {},
+'paint': {
+'fill-color': '#0a0',
+'fill-opacity': 0.5
+}
+});
+
+
+// field boundary stroke
+
+map.addLayer({
+"id": "route",
+"type": "line",
+"source": {
+"type": "geojson",
+"data": {
+"type": "Feature",
+"properties": {},
+"geometry": {
+"type": "LineString",
+"coordinates": [
+
+[-104.998632, 40.297446],
+[-104.99866499999999, 40.297458],
+[-104.998666, 40.297517],
+[-104.998666, 40.297568999999996],
+[-104.998666, 40.297621],
+[-104.998666, 40.297672],
+[-104.998666, 40.297723999999995],
+[-104.998666, 40.297776],
+[-104.998666, 40.297827999999996],
+[-104.998666, 40.297878999999995],
+[-104.998666, 40.297931],
+[-104.998666, 40.297982999999995],
+[-104.998666, 40.298034],
+[-104.99866399999999, 40.298069999999996],
+[-104.998656, 40.298105],
+[-104.998643, 40.298139],
+[-104.998626, 40.298172],
+[-104.998604, 40.298204],
+[-104.99857499999999, 40.298234],
+[-104.99853999999999, 40.298259],
+[-104.998499, 40.298279],
+[-104.998452, 40.298292],
+[-104.998403, 40.298297],
+[-104.99835399999999, 40.298293],
+[-104.998269, 40.298275],
+[-104.998228, 40.298268],
+[-104.998187, 40.298263999999996],
+[-104.998071, 40.29826],
+[-104.99795499999999, 40.298255999999995],
+[-104.997839, 40.298252],
+[-104.997794, 40.298249],
+[-104.997748, 40.298241999999995],
+[-104.997704, 40.298231],
+[-104.997661, 40.298218],
+[-104.99762, 40.2982],
+[-104.997582, 40.298179999999995],
+[-104.997547, 40.298154],
+[-104.997519, 40.298123],
+[-104.997501, 40.298088],
+[-104.99749299999999, 40.298051],
+[-104.997489, 40.297984],
+[-104.997484, 40.297917],
+[-104.99748, 40.29785],
+[-104.99747599999999, 40.297782999999995],
+[-104.997472, 40.297716],
+[-104.997551, 40.297681999999995],
+[-104.99761099999999, 40.297669],
+[-104.997671, 40.297655999999996],
+[-104.997731, 40.297643],
+[-104.99779199999999, 40.29763],
+[-104.997852, 40.297616],
+[-104.997912, 40.297602999999995],
+[-104.99797199999999, 40.29759],
+[-104.998032, 40.297577],
+[-104.998092, 40.297564],
+[-104.99815199999999, 40.297551],
+[-104.998212, 40.297537999999996],
+[-104.998272, 40.297523999999996],
+[-104.99833199999999, 40.297511],
+[-104.998392, 40.297498],
+[-104.998452, 40.297484999999995],
+[-104.99851199999999, 40.297472],
+[-104.998572, 40.297458999999996],
+[-104.998632, 40.297446],
+
+]
+}
+}
+},
+"layout": {
+"line-join": "round",
+"line-cap": "round"
+},
+"paint": {
+"line-color": "#0f0",
+"line-width": 4
+}
+});
+
+map.addLayer({
+"id": "field_41_label",
+"type": "symbol",
+"source": {
+"type": "geojson",
+"data": {
+"type": "FeatureCollection",
+"features": [{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [-104.99816409375, 40.29789151562500]
+}
+}]
+}
+},
+"layout": {
+"text-field": "Field 41",
+"text-variable-anchor": ["top", "bottom", "left", "right"],
+"text-radial-offset": 0.0,
+"text-size": 24,
+"text-font": ["Arial Unicode MS Bold"],
+"symbol-sort-key": 4,
+"text-justify": "auto"
+
+},
+"paint": {
+	"text-halo-color": "#000",
+	"text-halo-width": 2,
+	"text-color": "#fff"
+}
+});
+
+
+
+
+// vehicle location
+
+map.loadImage('https://vehicle-sync-test.s3-us-west-2.amazonaws.com/icons/yellow_triangle.png', function(error, image) 
+//map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Red_triangle_with_thick_white_border.svg/200px-Red_triangle_with_thick_white_border.svg.png', function(error, image) 
+		{
+if (error) throw error;
+map.addImage('yellow_v', image);
+map.addLayer({
+"id": "rod",
+"type": "symbol",
+"source": {
+"type": "geojson",
+"data": {
+"type": "FeatureCollection",
+"features": [{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [-104.998632, 40.29752]
+}
+}]
+}
+},
+"layout": {
+"icon-image": "yellow_v",
+"icon-size": 0.3,
+"icon-rotate": 45,
+"text-field": "Rod",
+"text-variable-anchor": ["top", "bottom", "left", "right"],
+"text-radial-offset": 0.75,
+"text-size": 18,
+"text-font": ["Arial Unicode MS Bold"],
+"symbol-sort-key": 2,
+"text-justify": "auto"
+
+},
+"paint": {
+	"text-halo-color": "#000",
+	"text-halo-width": 2,
+	"text-color": "#fff"
+}
+});
+});
+
+map.loadImage('https://vehicle-sync-test.s3-us-west-2.amazonaws.com/icons/blue_triangle.png', function(error, image) 
+//map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Red_triangle_with_thick_white_border.svg/200px-Red_triangle_with_thick_white_border.svg.png', function(error, image) 
+		{
+if (error) throw error;
+map.addImage('blue_v', image);
+map.addLayer({
+"id": "aran",
+"type": "symbol",
+"source": {
+"type": "geojson",
+"data": {
+"type": "FeatureCollection",
+"features": [{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [-104.9984, 40.298259]
+}
+}]
+}
+},
+"layout": {
+"icon-image": "blue_v",
+"icon-size": 0.3,
+"icon-rotate": 135,
+"text-field": "Aran",
+"text-variable-anchor": ["top", "bottom", "left", "right"],
+"text-radial-offset": 0.75,
+"text-size": 18,
+"text-font": ["Arial Unicode MS Bold"],
+"symbol-sort-key": 2,
+"text-justify": "auto"
+
+},
+"paint": {
+	"text-halo-color": "#000",
+	"text-halo-width": 2,
+	"text-color": "#fff"
+}
+});
+});
+
+map.loadImage('https://vehicle-sync-test.s3-us-west-2.amazonaws.com/icons/cyan_triangle.png', function(error, image) 
+//map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Red_triangle_with_thick_white_border.svg/200px-Red_triangle_with_thick_white_border.svg.png', function(error, image) 
+		{
+if (error) throw error;
+map.addImage('cyan_v', image);
+map.addLayer({
+"id": "chris",
+"type": "symbol",
+"source": {
+"type": "geojson",
+"data": {
+"type": "FeatureCollection",
+"features": [{
+"type": "Feature",
+"geometry": {
+"type": "Point",
+"coordinates": [-104.997671, 40.2977]
+}
+}]
+}
+},
+"layout": {
+"icon-image": "cyan_v",
+"icon-size": 0.3,
+"icon-rotate": 270,
+"text-field": "Chris",
+"text-variable-anchor": ["top", "bottom", "left", "right"],
+"text-radial-offset": 0.75,
+"text-size": 18,
+"text-font": ["Arial Unicode MS Bold"],
+"symbol-sort-key": 2,
+"text-justify": "auto"
+
+},
+"paint": {
+	"text-halo-color": "#000",
+	"text-halo-width": 2,
+	"text-color": "#fff"
+}
+});
+});
+
+
+map.on('click', 'field_41_label', function (e) {
+	var bbox = [[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]];
+	var features = map.queryRenderedFeatures(bbox, { layers: ['field_41_label'] });
+	selectField(4);
+		// alert("Field 41! "+JSON.stringify(features));
+});
+
+map.on('click', 'aran', function (e) {
+		toggleOperator("Aran");
+});
+map.on('click', 'rod', function (e) {
+		toggleOperator("Rod");
+});
+map.on('click', 'chris', function (e) {
+		toggleOperator("Chris");
+});
+ 
+});
+
+
+</script>
+</div>
+
+</div>
+
+<body>
+</html>
