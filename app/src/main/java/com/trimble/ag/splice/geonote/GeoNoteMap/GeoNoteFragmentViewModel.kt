@@ -10,4 +10,7 @@ class GeoNoteFragmentViewModel (private val geoNoteRepository: GeoNoteRepository
     fun addGeoNote(geoNote: GeoNote) {
         geoNoteRepository.addGeoNote(geoNote)
     }
+    fun deleteGeonote (geoNote: GeoNote){
+        geoNoteRepository.deleteGeoNote(geoNote)
+    }
 }

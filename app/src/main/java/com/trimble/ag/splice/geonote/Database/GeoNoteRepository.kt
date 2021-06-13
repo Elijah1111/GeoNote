@@ -21,6 +21,11 @@ class GeoNoteRepository private constructor (private val geoNoteDao: GeoNoteDao)
             geoNoteDao.addGeoNote(geoNote)
         }
     }
+    fun deleteGeoNote(geoNote: GeoNote){
+        executor.execute{
+            geoNoteDao.deleteGeoNote(geoNote)
+        }
+    }
     companion object {
         private var INSTANCE: GeoNoteRepository? = null
         fun getInstance(context: Context): GeoNoteRepository {

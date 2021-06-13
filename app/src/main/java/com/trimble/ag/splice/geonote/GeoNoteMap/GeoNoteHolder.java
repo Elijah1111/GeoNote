@@ -1,4 +1,5 @@
 package com.trimble.ag.splice.geonote.GeoNoteMap;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ public class GeoNoteHolder extends RecyclerView.ViewHolder{
     private final TextView geoNoteNameView;
     private final TextView geoNoteLocation;
     private final ImageView geoNoteImage;
+    private static final String TAG = "GeoNoteListHolder";
 
     public GeoNoteHolder(View v) {
         super(v);
@@ -28,7 +30,8 @@ public class GeoNoteHolder extends RecyclerView.ViewHolder{
         itemView.setOnClickListener(new View.OnClickListener(){
             @Override
                 public void onClick (View v){
-                //todo click stuff
+                Log.i(TAG, "View: "+geoNote.getName()+" clicked");
+                GeoNoteFragment.clickedGeonote(geoNote);
                 }
             });
         geoNoteNameView.setText(this.geoNote.getName());
