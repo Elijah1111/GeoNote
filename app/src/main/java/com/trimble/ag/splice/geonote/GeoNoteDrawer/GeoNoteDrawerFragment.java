@@ -69,7 +69,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         layoutManager = new GridLayoutManager(getActivity(), 3);
         recyclerView.setLayoutManager(layoutManager);
 
-        adapter.addViewModel(geoNoteDrawerViewModel);
+        adapter.addViewModel(geoNoteDrawerViewModel, requireActivity());
 
         recyclerView.setAdapter(adapter);
 
