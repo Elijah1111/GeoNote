@@ -76,15 +76,7 @@
 </style>
 
 
-<script>
 
-
-function updateLocation(lat, lon) {
-	document.getElementById("currentLocation").innerHTML = "("+lat+", "+lon+")";
-	//map.setCenter(new mapboxgl.LngLat(lat, lon))
-}
-
-</script>
 
 </head>
 
@@ -97,14 +89,27 @@ function updateLocation(lat, lon) {
 
 <div class="column right">
 <div id="map"></div>
-<script id="coords">
+<script>
+
+
+function setMapCenter(coords) {
+  if (map) {
+    map.setCenter(coords);
+  }
+}
+
+function updateLocation(lat, lon) {
+	document.getElementById("currentLocation").innerHTML = "("+lat+", "+lon+")";
+}
 mapboxgl.accessToken = '***REMOVED***';
 var map = new mapboxgl.Map({
 container: 'map',
 zoom: 18,
-center: [-104.99816409375, 40.29789151562500],
+center: [0, 0],
 style: 'mapbox://styles/mapbox/satellite-v9'
 });
+
+
 
 
 map.on('load', function () {
@@ -114,7 +119,7 @@ map.loadImage('https://vehicle-sync-test.s3-us-west-2.amazonaws.com/icons/blue_t
 if (error) throw error;
 map.addImage('blue_v', image);
 map.addLayer({
-"id": "aran",
+"id": "vehicle",
 "type": "symbol",
 "source": {
 "type": "geojson",
@@ -148,10 +153,6 @@ map.addLayer({
 	"text-color": "#fff"
 }
 });
-});
-
-map.on('click', 'aran', function (e) {
-		toggleOperator("Aran");
 });
  
 });
