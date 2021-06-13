@@ -49,8 +49,8 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
 
     public void initItemset() {
         Log.d(TAG, "Itemset");
-        Dataset = new String[]{"Crop","Garbage","Generic","Hazard","Livestock","Pest","Product","Spill","Weed"};
-        Imageset = new int[]{R.drawable.crop,R.drawable.garbage,R.drawable.generic,R.drawable.hazard,R.drawable.livestock,R.drawable.pest, R.drawable.product, R.drawable.spill, R.drawable.weed};
+        Dataset = new String[]{"Crop","Garbage","Generic","Hazard","Livestock","Pest","Product","Spill","Weed", "Add a Picture", "Add a Recording"};
+        Imageset = new int[]{R.drawable.crop,R.drawable.garbage,R.drawable.generic,R.drawable.hazard,R.drawable.livestock,R.drawable.pest, R.drawable.product, R.drawable.spill, R.drawable.weed, R.drawable.camera, R.drawable.redcircle};
     }
 
     @Override

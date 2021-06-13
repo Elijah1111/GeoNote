@@ -67,7 +67,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         }
 
         public void addGeoNote(int drawable, String name){
-            GeoNoteType geoNoteType;
+            GeoNoteType geoNoteType =null;
             switch (name) {//pick type
                 case "Crop":
                     geoNoteType = GeoNoteType.CROP;
@@ -93,6 +93,12 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                 case "Hazard":
                     geoNoteType = GeoNoteType.HAZARD;
                     break;
+                case "Add a Picture":
+                    Log.i(TAG, "Picture chosen");
+                    return;
+                case "Add a Recording":
+                    Log.i(TAG, "Recording Chosen");
+                    return;
                 default:
                     Log.w(TAG, "Invalid Icon Type");
                     geoNoteType = GeoNoteType.HAZARD;
