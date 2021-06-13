@@ -1,5 +1,11 @@
 package com.trimble.ag.splice.geonote.GeoNoteDrawer;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +14,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.trimble.ag.splice.Extension;
 import com.trimble.ag.splice.geonote.GeoNote;
 import com.trimble.ag.splice.geonote.GeoNoteExtension;
+import com.trimble.ag.splice.geonote.GeoNoteMap.GeoNoteFragmentViewModel;
 import com.trimble.ag.splice.geonote.GeoNoteType;
 import com.trimble.ag.splice.geonote.R;
 import com.trimble.ag.splice.location.Location;
+
+import java.io.File;
+import java.util.List;
 
 public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdapter.ViewHolder>{
 
@@ -24,9 +36,11 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
     private final int[] mImageSet;
     private GeoNoteDrawerViewModel geoNoteDrawerViewModel;
     protected GeoNoteExtension extension;
+    private FragmentActivity activity;
 
-    public void addViewModel(GeoNoteDrawerViewModel geoNoteDrawerViewModel) {
+    public void addViewModel(GeoNoteDrawerViewModel geoNoteDrawerViewModel, FragmentActivity fragmentActivity) {
         this.geoNoteDrawerViewModel = geoNoteDrawerViewModel;
+        activity=fragmentActivity;
     }
 
 
@@ -40,9 +54,10 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         private final ImageView imageView;
         private final GeoNoteDrawerViewModel geoNoteDrawerViewModel;
         private final GeoNoteExtension extension;
+        private File photoFile;
+        private Uri photoUri;
 
-
-        public ViewHolder(View v, GeoNoteDrawerViewModel geoNoteDrawerViewModel, int[] images, String[] data, Extension extension){
+        public ViewHolder(View v, GeoNoteDrawerViewModel geoNoteDrawerViewModel, int[] images, String[] data, Extension extension, FragmentActivity activity){
             super(v);
             this.extension = (GeoNoteExtension) extension;
             this.geoNoteDrawerViewModel =geoNoteDrawerViewModel;
@@ -51,7 +66,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
-                    addGeoNote(images[getAdapterPosition()], data[getAdapterPosition()]);
+                    addGeoNote(images[getAdapterPosition()], data[getAdapterPosition()], activity);
                    // geoNoteDrawerFragment.addGeoNote(image[getAdapterPosition()], data[getAdapterPosition()]);
                 }
             });
@@ -66,8 +81,19 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
             return imageView;
         }
 
-        public void addGeoNote(int drawable, String name){
+        public void addGeoNote(int drawable, String name, FragmentActivity activity){
             GeoNoteType geoNoteType =null;
+            GeoNote geoNote   = new GeoNote();
+            photoFile=geoNoteDrawerViewModel.getPhotoFile(geoNote);
+            photoUri=FileProvider.getUriForFile(activity, "com.trimble.ag.splice.geonote.fileprovider", photoFile);
+            boolean isEnabled = false;
+            PackageManager packageManager =activity.getPackageManager();
+            Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            ResolveInfo resolvedActivity = packageManager.resolveActivity(captureImage,PackageManager.MATCH_DEFAULT_ONLY);
+
+            if (resolvedActivity == null){
+                isEnabled = false;
+            }
             switch (name) {//pick type
                 case "Crop":
                     geoNoteType = GeoNoteType.CROP;
@@ -95,6 +121,17 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                     break;
                 case "Add a Picture":
                     Log.i(TAG, "Picture chosen");
+                    captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                    List<ResolveInfo> cameraActivities = packageManager.queryIntentActivities(captureImage, PackageManager.MATCH_DEFAULT_ONLY);
+                    for (ResolveInfo cameraActivity : cameraActivities){
+                        activity.grantUriPermission(
+                                cameraActivity.activityInfo.packageName,
+                                photoUri,
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        );
+                    }
+                    activity.startActivityForResult(captureImage, 2);
+
                     return;
                 case "Add a Recording":
                     Log.i(TAG, "Recording Chosen");
@@ -107,7 +144,6 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
 
             Location location = extension.getCurrentLocation();
             Log.w(TAG, "Location: "+location.getLatitude()+", "+location.getLongitude());
-            GeoNote geoNote   = new GeoNote();
             geoNote.setName(name);
             geoNote.setIcon(drawable);
             geoNote.setType(geoNoteType);
@@ -133,7 +169,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.geonote_drawer_item, parent, false);
        // geoNoteDrawerFragment = new GeoNoteDrawerFragment();
-        return new ViewHolder(v, geoNoteDrawerViewModel,mImageSet, mDataSet,extension);
+        return new ViewHolder(v, geoNoteDrawerViewModel,mImageSet, mDataSet,extension, activity);
     }
 
     @Override
