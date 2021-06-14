@@ -45,14 +45,10 @@ public class GeoNoteExtension extends Extension implements ActivityPage {
                 if(location.getLocationSource().contains("vehicle")) {
                     double lat = location.getLatitude();
                     double lon = location.getLongitude();
-                    String eval = "javascript:updateLocation("+lat+","+lon+")";
+                    String eval = "javascript:updateLocation("+lon+","+lat+")";
                     Log.d("aea3", eval);
                     try {
                         if(fragment != null) {
-                            fragment.evaluateJavascript(eval);
-
-                            //TODO find a way to not throttle setting the center. Will this be a problem?
-                            eval = "javascript:setMapCenter([2.349014, 48.864716])";//TODO add Field Cords Currently just Paris
                             fragment.evaluateJavascript(eval);
                         }
                     }
