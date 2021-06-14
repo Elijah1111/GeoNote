@@ -90,22 +90,31 @@
 <div class="column right">
 <div id="map"></div>
 <script>
-
-
+function setTract(){
+if(map){
+}
+}
 function setMapCenter(coords) {
   if (map) {
     map.setCenter(coords);
   }
 }
 
-function updateLocation(lat, lon) {
-	document.getElementById("currentLocation").innerHTML = "("+lat+", "+lon+")";
+function updateLocation(lon, lat) {
+	document.getElementById("currentLocation").innerHTML = "("+lon+", "+lat+")";
+	if(map){
+		map.getSource("vehicle").setData({type: "Feature",//set the vehicle position
+	 		geometry: {type: "Point", 
+			coordinates: [lon, lat]}
+		});
+    	map.setCenter([lon, lat]);//TODO Make this smoother by only moving the center everyso often
+	}
 }
 mapboxgl.accessToken = '***REMOVED***';
 var map = new mapboxgl.Map({
 container: 'map',
 zoom: 18,
-center: [0, 0],
+center: [0,0],
 style: 'mapbox://styles/mapbox/satellite-v9'
 });
 
@@ -156,8 +165,6 @@ map.addLayer({
 });
  
 });
-
-
 </script>
 </div>
 
