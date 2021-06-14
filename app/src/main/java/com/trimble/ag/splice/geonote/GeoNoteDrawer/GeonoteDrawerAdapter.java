@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         private final GeoNoteExtension extension;
         private File photoFile;
         private Uri photoUri;
+        private static GeoNote oldGeoNote;
 
         public ViewHolder(View v, GeoNoteDrawerViewModel geoNoteDrawerViewModel, int[] images, String[] data, Extension extension, FragmentActivity activity){
             super(v);
@@ -84,16 +86,16 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         public void addGeoNote(int drawable, String name, FragmentActivity activity){
             GeoNoteType geoNoteType =null;
             GeoNote geoNote   = new GeoNote();
-            photoFile=geoNoteDrawerViewModel.getPhotoFile(geoNote);
-            photoUri=FileProvider.getUriForFile(activity, "com.trimble.ag.splice.geonote.fileprovider", photoFile);
-            boolean isEnabled = false;
-            PackageManager packageManager =activity.getPackageManager();
+            //photoFile=geoNoteDrawerViewModel.getPhotoFile(geoNote);
+            //photoUri=FileProvider.getUriForFile(activity, "com.trimble.ag.splice.geonote.fileprovider", photoFile);
+            //boolean isEnabled = false;
+            //PackageManager packageManager =activity.getPackageManager();
             Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            ResolveInfo resolvedActivity = packageManager.resolveActivity(captureImage,PackageManager.MATCH_DEFAULT_ONLY);
+            //ResolveInfo resolvedActivity = packageManager.resolveActivity(captureImage,PackageManager.MATCH_DEFAULT_ONLY);
 
-            if (resolvedActivity == null){
-                isEnabled = false;
-            }
+            //if (resolvedActivity == null){
+            //    isEnabled = false;
+            //}
             switch (name) {//pick type
                 case "Crop":
                     geoNoteType = GeoNoteType.CROP;
@@ -121,17 +123,18 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                     break;
                 case "Add a Picture":
                     Log.i(TAG, "Picture chosen");
-                    captureImage.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                    List<ResolveInfo> cameraActivities = packageManager.queryIntentActivities(captureImage, PackageManager.MATCH_DEFAULT_ONLY);
+                    captureImage.putExtra(MediaStore.EXTRA_OUTPUT, getImageUri(geoNote));
+                    /*List<ResolveInfo> cameraActivities = packageManager.queryIntentActivities(captureImage, PackageManager.MATCH_DEFAULT_ONLY);
                     for (ResolveInfo cameraActivity : cameraActivities){
                         activity.grantUriPermission(
                                 cameraActivity.activityInfo.packageName,
                                 photoUri,
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                         );
-                    }
+                    }*/
                     activity.startActivityForResult(captureImage, 2);
-
+                    oldGeoNote.setPictures(photoUri);
+                    geoNoteDrawerViewModel.updateGeoNote(oldGeoNote);
                     return;
                 case "Add a Recording":
                     Log.i(TAG, "Recording Chosen");
@@ -149,9 +152,16 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
             geoNote.setType(geoNoteType);
             geoNote.setPos(new double[]{location.getLatitude(), location.getLongitude()});
             //TODO Pictures/audio
-
+            oldGeoNote = geoNote;
             // geoNoteDrawerViewModel.insert(geoNote);
             geoNoteDrawerViewModel.addGeoNote(geoNote);
+        }
+
+        private Uri getImageUri(GeoNote geoNote) {
+            File file = new File(Environment.getExternalStorageDirectory() + "/DCIM/Camera", "IMG_"+geoNote.getUid().toString()+".jpg");
+            photoUri = Uri.fromFile(file);
+
+            return photoUri;
         }
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)
