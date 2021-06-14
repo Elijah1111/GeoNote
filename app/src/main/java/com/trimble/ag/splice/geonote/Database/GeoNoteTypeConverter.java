@@ -1,5 +1,6 @@
 package com.trimble.ag.splice.geonote.Database;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.room.TypeConverter;
@@ -120,6 +121,16 @@ public class GeoNoteTypeConverter {
                 break;
         }
         return geoNoteType;
+    }
+    @TypeConverter
+    public Uri toUriType(String input){
+        if(input == null) return null;
+        else return Uri.parse(input);
+    }
+    @TypeConverter
+    public String fromUriType (Uri input){
+        if(input==null) return null;
+        return input.toString();
     }
 }
 

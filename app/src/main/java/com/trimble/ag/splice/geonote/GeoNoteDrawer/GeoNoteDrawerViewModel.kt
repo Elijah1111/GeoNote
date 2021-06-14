@@ -14,4 +14,7 @@ class GeoNoteDrawerViewModel (private val geoNoteRepository: GeoNoteRepository)
     fun getPhotoFile(geoNote: GeoNote): File {
         return(geoNoteRepository.getPhotoFile(geoNote))
     }
+    fun updateGeoNote(geoNote: GeoNote){
+        geoNoteRepository.updateGeoNote(geoNote)
+    }
 }
