@@ -1,6 +1,6 @@
 package com.trimble.ag.splice.geonote
 
-import androidx.room.ColumnInfo
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
@@ -13,7 +13,7 @@ data class GeoNote(
 
     var type: GeoNoteType? = null,
 
-    var pictures:String = "pics", //path to stored pictures
+    var pictures: Uri? = null, //path to stored pictures
 
     var audio:String = "sound", //path to audio clip
 
