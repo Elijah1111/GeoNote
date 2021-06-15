@@ -12,7 +12,7 @@ import com.trimble.ag.splice.geonote.GeoNote
 abstract class GeoNoteDatabase: RoomDatabase() {
     abstract val geoNoteDao:GeoNoteDao
     companion object {
-        private const val DATABASE_NAME = "geonotestest"
+        private const val DATABASE_NAME = "geonotesdata"
         private var INSTANCE: GeoNoteDatabase? = null
 
         fun getInstance(context: Context): GeoNoteDatabase {

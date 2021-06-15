@@ -21,6 +21,7 @@ public class GeoNoteDetailsHolder extends RecyclerView.ViewHolder {
     private final TextView geoNoteLocation;
     private final ImageView geoNoteImage;
     private final ImageView geoNotePicture;
+    private final ImageView geoNoteAudio;
     private final Button back;
     private final Button delete;
     private static final String TAG = "GeoNoteListHolder";
@@ -32,6 +33,7 @@ public class GeoNoteDetailsHolder extends RecyclerView.ViewHolder {
         geoNoteLocation = itemView.findViewById(R.id.note_loc_text_view);
         geoNoteImage = itemView.findViewById(R.id.geonote_detail_image);
         geoNotePicture = itemView.findViewById(R.id.note_image);
+        geoNoteAudio = itemView.findViewById(R.id.audio_image);
         back = itemView.findViewById(R.id.back_button);
         delete = itemView.findViewById(R.id.delete_button);
     }
@@ -56,6 +58,16 @@ public class GeoNoteDetailsHolder extends RecyclerView.ViewHolder {
         if(geoNote.getPictures() != null){
             geoNotePicture.setVisibility(View.VISIBLE);
             geoNotePicture.setImageURI(geoNote.getPictures());
+        }
+        if(geoNote.getPictures() == null){
+            geoNoteAudio.setVisibility(View.VISIBLE);
+            geoNoteAudio.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    Log.i(TAG, "Play clicked");
+
+                }
+            });
         }
         geoNoteNameView.setText(this.geoNote.getName());
         String location = this.geoNote.getPos()[0] + ", " + this.geoNote.getPos()[1];

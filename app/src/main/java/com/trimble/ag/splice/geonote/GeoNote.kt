@@ -15,7 +15,7 @@ data class GeoNote(
 
     var pictures: Uri? = null, //path to stored pictures
 
-    var audio:String = "sound", //path to audio clip
+    var audio:Uri? = null, //path to audio clip
 
     var icon:Int = 0,
 
