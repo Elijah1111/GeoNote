@@ -39,14 +39,13 @@ public class GeoNoteExtension extends Extension implements ActivityPage {
 
 
         localListener = new LocationListener(){//Listen for location change
-            boolean center = false;//only set the center once
             @Override
             public void onLocationChanged(Location location) {
                 if(location.getLocationSource().contains("vehicle")) {
                     double lat = location.getLatitude();
                     double lon = location.getLongitude();
                     String eval = "javascript:updateLocation("+lon+","+lat+")";
-                    Log.d("aea3", eval);
+                    //Log.d("aea3", eval);
                     try {
                         if(fragment != null) {
                             fragment.evaluateJavascript(eval);
