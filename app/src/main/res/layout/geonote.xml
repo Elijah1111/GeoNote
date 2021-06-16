@@ -1,16 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="?android:attr/dividerHorizontal"
+    android:showDividers="middle"
+    android:orientation="horizontal"
+    android:baselineAligned="false">
+    <WebView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/webView"
+        android:layout_weight="5"/>
+<!--    <FrameLayout
+        android:id="@+id/var_fill_view"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>-->
+   <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/your_geonote_list_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"/>
+
+</LinearLayout>
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.trimble.ag.splice.geonote.GeoNoteFragment">
+    tools:context="com.trimble.ag.splice.geonote.GeoNoteMap.GeoNoteFragment">
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-</RelativeLayout>
+</RelativeLayout>-->
 
 <!--
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
