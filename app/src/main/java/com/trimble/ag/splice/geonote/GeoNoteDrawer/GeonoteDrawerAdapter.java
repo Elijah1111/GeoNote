@@ -33,7 +33,7 @@ import com.trimble.ag.splice.location.Location;
 import java.io.File;
 import java.util.List;
 
-public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdapter.ViewHolder>{
+public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdapter.ViewHolder>{//Creates the view of all the icons in the GeoNote Drawer
 
     private static final String TAG = "GeoNoteDrawerAdapter";
     private final String[] mDataSet;
@@ -42,7 +42,7 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
     protected GeoNoteExtension extension;
     private FragmentActivity activity;
 
-    public void addViewModel(GeoNoteDrawerViewModel geoNoteDrawerViewModel, FragmentActivity fragmentActivity) {
+    public void addViewModel(GeoNoteDrawerViewModel geoNoteDrawerViewModel, FragmentActivity fragmentActivity) {//Adds the GeoNoteDrawerViewModel to this class to maintain the instance
         this.geoNoteDrawerViewModel = geoNoteDrawerViewModel;
         activity=fragmentActivity;
     }
@@ -53,19 +53,17 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {//Inner class that represents each of the individual icons and their functionality.
         private final TextView textView;
         private final ImageView imageView;
         private final GeoNoteDrawerViewModel geoNoteDrawerViewModel;
         private final GeoNoteExtension extension;
-        private File photoFile;
         private Uri photoUri;
         private Uri audioUri;
         private static GeoNote oldGeoNote;
         private static boolean record = true;
-        private static MediaRecorder mediaRecorder;
 
-        public ViewHolder(View v, GeoNoteDrawerViewModel geoNoteDrawerViewModel, int[] images, String[] data, Extension extension, FragmentActivity activity){
+        public ViewHolder(View v, GeoNoteDrawerViewModel geoNoteDrawerViewModel, int[] images, String[] data, Extension extension, FragmentActivity activity){//Constructor that sets the icon-specific data
             super(v);
             this.extension = (GeoNoteExtension) extension;
             this.geoNoteDrawerViewModel =geoNoteDrawerViewModel;
@@ -76,7 +74,6 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                 public void onClick(View v) {
                     Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
                     addGeoNote(images[getAdapterPosition()], data[getAdapterPosition()], activity);
-                   // geoNoteDrawerFragment.addGeoNote(image[getAdapterPosition()], data[getAdapterPosition()]);
                 }
             });
             textView = (TextView) v.findViewById(R.id.note_name_text_view);
@@ -95,22 +92,10 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
             GeoNoteType geoNoteType = null;
             GeoNote geoNote = new GeoNote();
 
-
-            //photoFile=geoNoteDrawerViewModel.getPhotoFile(geoNote);
-            //photoUri=FileProvider.getUriForFile(activity, "com.trimble.ag.splice.geonote.fileprovider", photoFile);
-            //boolean isEnabled = false;
-            //PackageManager packageManager =activity.getPackageManager();
-            try {
+            try {//Surrounded by a try catch in case the Picture or camera doesn't exist on the device
                 Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 Intent captureAudio = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-
-
-            //ResolveInfo resolvedActivity = packageManager.resolveActivity(captureImage,PackageManager.MATCH_DEFAULT_ONLY);
-
-            //if (resolvedActivity == null){
-            //    isEnabled = false;
-            //}
-            switch (name) {//pick type
+            switch (name) {//picks the type and assign or execute necessary functions
                 case "Crop":
                     geoNoteType = GeoNoteType.CROP;
                     break;
@@ -137,22 +122,14 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
                     break;
                 case "Add a Picture":
                     Log.i(TAG, "Picture chosen");
-                    captureImage.putExtra(MediaStore.EXTRA_OUTPUT, getImageUri(geoNote));
-                    /*List<ResolveInfo> cameraActivities = packageManager.queryIntentActivities(captureImage, PackageManager.MATCH_DEFAULT_ONLY);
-                    for (ResolveInfo cameraActivity : cameraActivities){
-                        activity.grantUriPermission(
-                                cameraActivity.activityInfo.packageName,
-                                photoUri,
-                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                        );
-                    }*/
+                    captureImage.putExtra(MediaStore.EXTRA_OUTPUT, getImageUri(geoNote));//Captures image and updates the last GeoNote created
                     activity.startActivityForResult(captureImage, 2);
                     oldGeoNote.setPictures(photoUri);
                     geoNoteDrawerViewModel.updateGeoNote(oldGeoNote);
                     return;
                 case "Add a Recording":
                     Log.i(TAG, "Recording Chosen");
-                    captureAudio.putExtra(MediaStore.EXTRA_OUTPUT, getAudioUri(geoNote));
+                    captureAudio.putExtra(MediaStore.EXTRA_OUTPUT, getAudioUri(geoNote));//Captures audio and updates the last GeoNote created
                     activity.startActivityForResult(captureAudio, 3);
                     oldGeoNote.setAudio(audioUri);
                     geoNoteDrawerViewModel.updateGeoNote(oldGeoNote);
@@ -166,37 +143,33 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
 
             Location location = extension.getCurrentLocation();
             Log.w(TAG, "Location: " + location.getLatitude() + ", " + location.getLongitude());
-            geoNote.setName(name);
+            geoNote.setName(name);//Sets GeoNote parameters
             geoNote.setIcon(drawable);
             geoNote.setType(geoNoteType);
             geoNote.setPos(new double[]{location.getLatitude(), location.getLongitude()});
-            //TODO Pictures/audio
             oldGeoNote = geoNote;
-            // geoNoteDrawerViewModel.insert(geoNote);
-            geoNoteDrawerViewModel.addGeoNote(geoNote);
+            geoNoteDrawerViewModel.addGeoNote(geoNote);//Adds the GeoNote to the database
         }
-            catch (Exception e){
+            catch (Exception e){//Prints the exception if the camera/recording hardware fails
                 Log.i(TAG, e.toString());
-                return;
             }
         }
 
-        private Uri getImageUri(GeoNote geoNote) {
+        private Uri getImageUri(GeoNote geoNote) {//Gets the file name for the picture from the UUID
             File file = new File(Environment.getExternalStorageDirectory() + "/DCIM/Camera", "IMG_"+geoNote.getUid().toString()+".jpg");
             photoUri = Uri.fromFile(file);
 
             return photoUri;
         }
-        private Uri getAudioUri(GeoNote geoNote) {
+        private Uri getAudioUri(GeoNote geoNote) {//Gets the file name for the audio from the UUID
             File file = new File(Environment.getExternalStorageDirectory() + "/DCIM", "Audio_"+geoNote.getUid().toString()+".mp3");
             audioUri = Uri.fromFile(file);
 
             return photoUri;
         }
     }
-    // END_INCLUDE(recyclerViewSampleViewHolder)
 
-    public GeonoteDrawerAdapter(String[] dataSet, int[] imageSet){
+    public GeonoteDrawerAdapter(String[] dataSet, int[] imageSet){//Passes in the list information for the drawer
         mDataSet = dataSet;
         mImageSet = imageSet;
     }
@@ -208,7 +181,6 @@ public class GeonoteDrawerAdapter extends RecyclerView.Adapter<GeonoteDrawerAdap
         // Create a new view.
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.geonote_drawer_item, parent, false);
-       // geoNoteDrawerFragment = new GeoNoteDrawerFragment();
         return new ViewHolder(v, geoNoteDrawerViewModel,mImageSet, mDataSet,extension, activity);
     }
 

@@ -52,7 +52,7 @@ public class GeoNoteFragment extends SpliceFragment{
     protected static GeoNoteAdapter mAdapter;
     private static GeoNoteFragmentViewModel geoNoteFragmentViewModel;
 
-    public static void clickedGeonote(GeoNote geoNote) {
+    public static void clickedGeonote(GeoNote geoNote) {//When a GeoNote is clicked it redirects to the details
         GeoNoteDetailsAdapter detailsAdapter = new GeoNoteDetailsAdapter(geoNote);
         detailsAdapter.addViewModel(geoNoteFragmentViewModel);
         mRecyclerView.setAdapter(detailsAdapter);
@@ -60,16 +60,16 @@ public class GeoNoteFragment extends SpliceFragment{
 
     public static void backToList() {
         updateUI(geoNotes);
-    }
+    }//Updates the view when the user navigates back
 
-    private static void updateUI(List<GeoNote> geoNotes){
+    private static void updateUI(List<GeoNote> geoNotes){//Sets the adapter to the current list of GeoNotes
         Log.d(TAG, "Update with "+ geoNotes.size());
         mAdapter = new GeoNoteAdapter(geoNotes);
         mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {//Creates the instance of the fragment and view model
         Log.d(TAG, "onCreate() called");
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
@@ -89,18 +89,17 @@ public class GeoNoteFragment extends SpliceFragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView() called");
-        View rootView = getLayoutInflater(inflater).inflate(R.layout.geonote, container, false);
+        View rootView = getLayoutInflater(inflater).inflate(R.layout.geonote, container, false);//Sets the root view
         webView = rootView.findViewById(R.id.webView);
-        webView.setWebContentsDebuggingEnabled(true);//TODO Remove
 
-        mRecyclerView= rootView.findViewById(R.id.your_geonote_list_recycler_view);
+        mRecyclerView= rootView.findViewById(R.id.your_geonote_list_recycler_view);//sets the recycler view
 
 
         layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
 
 
-        if(webView != null) {
+        if(webView != null) {//Sets up interface to Map webpage
             if(webViewClient == null) {
                 webViewClient = new WebViewClient(){
 
@@ -144,7 +143,7 @@ public class GeoNoteFragment extends SpliceFragment{
             }
             webView.setWebViewClient(webViewClient);
             webView.getSettings().setJavaScriptEnabled(true);
-            if(webViewBundle == null) {
+            if(webViewBundle == null) {//sets the url for the webpage
                 String url = urlPrefix+"www/geonote_map.html";
                 Log.d("aea", "loading webview from url: "+url);
                 webView.loadUrl(url);
@@ -162,7 +161,7 @@ public class GeoNoteFragment extends SpliceFragment{
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated() called");
-        geoNoteFragmentViewModel.getGeoNoteLiveData().observe(
+        geoNoteFragmentViewModel.getGeoNoteLiveData().observe(//Observes the live data and updates the list and map with the information
                 getViewLifecycleOwner(), geoNotes -> {
                     Log.i(TAG, "Got GeoNotes " + geoNotes.size());
                     GeoNoteFragment.geoNotes = geoNotes;
@@ -207,10 +206,3 @@ public class GeoNoteFragment extends SpliceFragment{
 
     }
 }
-
-
-    /*public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return getLayoutInflater(inflater).inflate(R.layout.geonote, container, false);
-    }*/

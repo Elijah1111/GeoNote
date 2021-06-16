@@ -47,7 +47,7 @@ public class GeoNoteDrawerFragment extends SpliceFragment {
         geoNoteDrawerViewModel = new ViewModelProvider(this, factory).get(GeoNoteDrawerViewModel.class);
     }
 
-    public void initItemset() {
+    public void initItemset() {//Initializes the list used for the drawer
         Log.d(TAG, "Itemset");
         Dataset = new String[]{"Crop","Garbage","Generic","Hazard","Livestock","Pest","Product","Spill","Weed", "Add a Picture", "Add a Recording"};
         Imageset = new int[]{R.drawable.crop,R.drawable.garbage,R.drawable.generic,R.drawable.hazard,R.drawable.livestock,R.drawable.pest, R.drawable.product, R.drawable.spill, R.drawable.weed, R.drawable.camera, R.drawable.redcircle};

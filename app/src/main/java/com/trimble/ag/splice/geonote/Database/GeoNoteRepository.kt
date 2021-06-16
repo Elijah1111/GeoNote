@@ -7,10 +7,11 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.Executors
 
-class GeoNoteRepository private constructor (private val geoNoteDao: GeoNoteDao, context: Context)
+class GeoNoteRepository private constructor (private val geoNoteDao: GeoNoteDao, context: Context)//Used to access and manage the data base
 {
     private val executor = Executors.newSingleThreadExecutor()
     private val filesDir = context.applicationContext.filesDir
+    //Provides functions that access or query the GeoNote DAO
     fun getGeoNotes(): LiveData<List<GeoNote>> =geoNoteDao.getNotes()
     fun getGeoNote(id: UUID): LiveData<GeoNote?> = geoNoteDao.getNote(id)
     fun updateGeoNote(geoNote: GeoNote){
@@ -28,7 +29,8 @@ class GeoNoteRepository private constructor (private val geoNoteDao: GeoNoteDao,
             geoNoteDao.deleteGeoNote(geoNote)
         }
     }
-    companion object {
+    fun getPhotoFile(geoNote: GeoNote):File = File(filesDir, geoNote.photoFileName)
+    companion object {//Returns the instance for use in the View Models
         private var INSTANCE: GeoNoteRepository? = null
         fun getInstance(context: Context): GeoNoteRepository {
             synchronized(this) {
@@ -42,5 +44,4 @@ class GeoNoteRepository private constructor (private val geoNoteDao: GeoNoteDao,
             }
         }
     }
-    fun getPhotoFile(geoNote: GeoNote):File = File(filesDir, geoNote.photoFileName)
 }

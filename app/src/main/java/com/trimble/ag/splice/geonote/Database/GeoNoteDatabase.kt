@@ -9,13 +9,13 @@ import com.trimble.ag.splice.geonote.GeoNote
 
 @Database(entities = [ GeoNote::class ], version = 1)
 @TypeConverters(GeoNoteTypeConverter::class)
-abstract class GeoNoteDatabase: RoomDatabase() {
+abstract class GeoNoteDatabase: RoomDatabase() {//Creates class framework/instance for the database
     abstract val geoNoteDao:GeoNoteDao
     companion object {
-        private const val DATABASE_NAME = "geonotesdata"
+        private const val DATABASE_NAME = "geonotesdata"//Used to set the name
         private var INSTANCE: GeoNoteDatabase? = null
 
-        fun getInstance(context: Context): GeoNoteDatabase {
+        fun getInstance(context: Context): GeoNoteDatabase {//Returns the instance for use in the GeoNote Repository
             synchronized(this) {
                 var instance = INSTANCE
                 if(instance == null) {

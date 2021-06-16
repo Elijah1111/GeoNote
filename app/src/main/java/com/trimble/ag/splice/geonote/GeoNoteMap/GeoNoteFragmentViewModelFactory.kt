@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.trimble.ag.splice.geonote.Database.GeoNoteRepository
 
 class GeoNoteFragmentViewModelFactory (private val context: Context)
-    : ViewModelProvider.Factory {
+    : ViewModelProvider.Factory {//Maintains the instance of the GeoNote Repository
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return modelClass.getConstructor(GeoNoteRepository::class.java)
             .newInstance(GeoNoteRepository.getInstance(context))

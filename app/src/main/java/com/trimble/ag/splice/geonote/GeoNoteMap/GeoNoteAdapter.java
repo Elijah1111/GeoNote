@@ -13,7 +13,7 @@ import com.trimble.ag.splice.geonote.databinding.GeonoteListItemBinding;
 
 import java.util.List;
 
-public class GeoNoteAdapter extends RecyclerView.Adapter<GeoNoteHolder> {
+public class GeoNoteAdapter extends RecyclerView.Adapter<GeoNoteHolder> {//Creates the recycler view for the GeoNote list
     private List<GeoNote> mGeoNotes;
     public GeoNoteAdapter(List<GeoNote> geoNotes) {
         mGeoNotes = geoNotes;
@@ -24,9 +24,8 @@ public class GeoNoteAdapter extends RecyclerView.Adapter<GeoNoteHolder> {
         // Create a new view.
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.geonote_list_item, parent, false);
-        /*GeonoteListItemBinding binding = GeonoteListItemBinding
-                .inflate(LayoutInflater.from(parent.getContext()), parent, false);*/
-        return new GeoNoteHolder(v);
+
+        return new GeoNoteHolder(v);//Uses the holder to display each item
     }
 
     @Override

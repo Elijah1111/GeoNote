@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.trimble.ag.splice.geonote.GeoNote;
 import com.trimble.ag.splice.geonote.R;
 import com.trimble.ag.splice.geonote.databinding.GeonoteListItemBinding;
-public class GeoNoteHolder extends RecyclerView.ViewHolder{
+public class GeoNoteHolder extends RecyclerView.ViewHolder{//Uses the imported GeoNote to display the list item with necessary information
 
     GeonoteListItemBinding mBinding;
     private GeoNote geoNote;
@@ -39,11 +39,5 @@ public class GeoNoteHolder extends RecyclerView.ViewHolder{
         geoNoteLocation.setText(location);
         geoNoteImage.setImageResource(this.geoNote.getIcon());
     }
-
-/*    static GeoNoteHolder create(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.geonote_list_item, parent, false);
-        return new GeoNoteHolder(view);
-    }*/
 
 }

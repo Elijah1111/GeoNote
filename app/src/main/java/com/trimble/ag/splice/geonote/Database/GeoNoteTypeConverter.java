@@ -9,7 +9,7 @@ import com.trimble.ag.splice.geonote.GeoNoteType;
 
 import java.util.UUID;
 
-public class GeoNoteTypeConverter {
+public class GeoNoteTypeConverter {//Converts data types back and forth from strings for easy storage in the database
     @TypeConverter
     public UUID toUUID(String uuid){
         return(UUID.fromString(uuid));

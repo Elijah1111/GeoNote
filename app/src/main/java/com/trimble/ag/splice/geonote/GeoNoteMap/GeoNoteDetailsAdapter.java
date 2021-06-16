@@ -11,7 +11,7 @@ import com.trimble.ag.splice.geonote.R;
 
 import java.util.List;
 
-public class GeoNoteDetailsAdapter extends RecyclerView.Adapter<GeoNoteDetailsHolder> {
+public class GeoNoteDetailsAdapter extends RecyclerView.Adapter<GeoNoteDetailsHolder> {//Creates the recycler view for the GeoNote details screen
     private GeoNote mGeoNote;
     private GeoNoteFragmentViewModel geoNoteFragmentViewModel;
 
@@ -24,9 +24,7 @@ public class GeoNoteDetailsAdapter extends RecyclerView.Adapter<GeoNoteDetailsHo
         // Create a new view.
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_geonote_details, parent, false);
-        /*GeonoteListItemBinding binding = GeonoteListItemBinding
-                .inflate(LayoutInflater.from(parent.getContext()), parent, false);*/
-        return new GeoNoteDetailsHolder(v, geoNoteFragmentViewModel);
+        return new GeoNoteDetailsHolder(v, geoNoteFragmentViewModel);//Uses a GeoNote details holder for the view
     }
 
     @Override

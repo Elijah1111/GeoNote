@@ -6,7 +6,7 @@ import com.trimble.ag.splice.geonote.GeoNote
 import java.io.File
 
 class GeoNoteDrawerViewModel (private val geoNoteRepository: GeoNoteRepository)
-    : ViewModel() {
+    : ViewModel() {//Allows for the drawer to access the GeoNote repository instance
     val geoNoteLiveData = geoNoteRepository.getGeoNotes()
     fun addGeoNote(geoNote: GeoNote) {
         geoNoteRepository.addGeoNote(geoNote)

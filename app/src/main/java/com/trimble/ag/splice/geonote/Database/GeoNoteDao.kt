@@ -6,7 +6,7 @@ import com.trimble.ag.splice.geonote.GeoNote
 import java.util.*
 
 @Dao
-interface GeoNoteDao {
+interface GeoNoteDao {//Room DAO interface for functions with the database
     @Query("SELECT * FROM geoNote")
     fun getNotes(): LiveData<List<GeoNote>>
 

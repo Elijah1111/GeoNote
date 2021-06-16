@@ -26,7 +26,7 @@ public class GeoNoteDetailsHolder extends RecyclerView.ViewHolder {
     private final Button delete;
     private static final String TAG = "GeoNoteListHolder";
 
-    public GeoNoteDetailsHolder(View v, GeoNoteFragmentViewModel geoNoteFragmentViewModel) {
+    public GeoNoteDetailsHolder(View v, GeoNoteFragmentViewModel geoNoteFragmentViewModel) {//Uses the imported GeoNote to display the details screen with necessary
         super(v);
         this.geoNoteFragmentViewModel = geoNoteFragmentViewModel;
         geoNoteNameView = itemView.findViewById(R.id.note_name_text_view);

@@ -6,7 +6,7 @@ import com.trimble.ag.splice.geonote.GeoNote
 import java.io.File
 
 class GeoNoteFragmentViewModel (private val geoNoteRepository: GeoNoteRepository)
-    : ViewModel() {
+    : ViewModel() {//Allows for the Extension page to access the GeoNote repository instance
     val geoNoteLiveData = geoNoteRepository.getGeoNotes()
     fun addGeoNote(geoNote: GeoNote) {
         geoNoteRepository.addGeoNote(geoNote)
