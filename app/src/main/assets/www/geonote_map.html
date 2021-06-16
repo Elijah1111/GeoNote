@@ -74,7 +74,7 @@
   padding-bottom: 16px
 }
 .marker {/*Make the GeoNote Markers*/
-  background-image: url('../../res/drawable/generic.png');
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c0/Anchor.png');/*TODO this is a PlaceHolder*/
   background-size: cover;
   width: 50px;
   height: 50px;
@@ -91,7 +91,59 @@
 }
 
 </style>
+<script>
+function updateLocation(lon, lat) {
+	document.getElementById("currentLocation").innerHTML = "("+lon+", "+lat+")";
+	if(map){
+		map.getSource("vehicle").setData({type: "Feature",//set the vehicle position
+	 		geometry: {type: "Point", 
+			coordinates: [lon, lat]}
+		});
+    	map.setCenter([lon, lat]);
+	}
+}
+function drawMark (feat){//draw a marker
+  	// create a HTML element for each feature
+  	var el = document.createElement('div');
+ 	el.className = 'marker';
+	switch(feat.properties.title){//Set the images in Here TODO
+		case 'Hazard':
+			console.log("Hazard");
+			//marker.backgroundimage.setUrl("../../res/drawable/hazard.png");
+			break; 
+		case 'Pest':
+			console.log("Pest"); 
+			break;
+		//etc
+		case 'NULL':
+			return;//do not draw the null
+		default: 
+			//Should Already be a generic 
+	}
+  // make a marker for each feature and add to the map
+  new mapboxgl.Marker(el)
+    .setLngLat(feat.geometry.coordinates)
+    .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+    .setHTML('<h3>' + feat.properties.title + '</h3><p>' + feat.properties.description + '</p>'))
+	.addTo(map);
+}
 
+function addGeoNote(name,lon,lat,picture){
+geojson.features.push({"type": 'Feature',
+    "geometry": {
+      "type": 'Point',"coordinates": [lon, lat]
+    },
+    "properties": {
+      "title": name ,"description": picture
+	}
+	});
+console.log(geojson.features);
+var len = geojson.features.length;
+drawMark(geojson.features[len-1]);
+}
+
+
+</script>
 
 
 
@@ -107,28 +159,12 @@
 <div class="column right">
 <div id="map"></div>
 <script>
-function setMapCenter(coords) {
-  if (map) {
-    map.setCenter(coords);
-  }
-}
-
-function updateLocation(lon, lat) {
-	document.getElementById("currentLocation").innerHTML = "("+lon+", "+lat+")";
-	if(map){
-		map.getSource("vehicle").setData({type: "Feature",//set the vehicle position
-	 		geometry: {type: "Point", 
-			coordinates: [lon, lat]}
-		});
-    	map.setCenter([lon, lat]);
-	}
-}
 
 mapboxgl.accessToken = '***REMOVED***';
 var map = new mapboxgl.Map({
 container: 'map',
 zoom: 18,
-center: [-77.032, 38.913],
+center: [0, 0],
 style: 'mapbox://styles/mapbox/satellite-v9'
 });
 
@@ -183,61 +219,18 @@ map.addLayer({
 var geojson = {
   type: 'FeatureCollection',
   features: [{
-    type: 'Feature',
+    type: 'Feature',//This feature is a placeholder do not remove
     geometry: {
       type: 'Point',
-      coordinates: [-122.414, 37.776]
+      coordinates: [0, 0]
     },
     properties: {
-      title: 'There',
-      description: 'San Francisco, California'
+      title: 'Null',
+      description: 'Do Not Render'
     }
   }]
 };
 
-function drawMark (feat){//
-  	// create a HTML element for each feature
-  	var el = document.createElement('div');
- 	el.className = 'marker';
-	switch(feat.properties.title){//Set the images in Here TODO
-		case 'Hazard':
-			console.log("Hazard");
-			//marker.backgroundimage.setUrl("../../res/drawable/hazard.png");
-			break; 
-		case 'Pest':
-			console.log("Pest"); 
-			break;
-		//etc
-		case 'NULL':
-			return;//do not draw the null
-		default: 
-			//Should Already be a generic 
-	}
-  // make a marker for each feature and add to the map
-  new mapboxgl.Marker(el)
-    .setLngLat(feat.geometry.coordinates)
-    .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-    .setHTML('<h3>' + feat.properties.title + '</h3><p>' + feat.properties.description + '</p>'))
-	.addTo(map);
-}
-
-function addGeoNote(name,lon,lat,desc){
-geojson.features.push({"type": 'Feature',
-    "geometry": {
-      "type": 'Point',"coordinates": [lon, lat]
-    },
-    "properties": {
-      "title": name ,"description": desc
-	}
-	});
-console.log(geojson.features);
-var len = geojson.features.length;
-drawMark(geojson.features[len-1]);
-}
-
-function drawNotes(){
-
-}
 </script>
 </div>
 

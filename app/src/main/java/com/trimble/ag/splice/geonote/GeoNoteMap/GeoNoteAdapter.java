@@ -39,17 +39,4 @@ public class GeoNoteAdapter extends RecyclerView.Adapter<GeoNoteHolder> {
     public int getItemCount() {
         return mGeoNotes.size();
     }
-
-/*    static class GeoNoteDiff extends DiffUtil.ItemCallback<GeoNote> {
-
-        @Override
-        public boolean areItemsTheSame(@NonNull GeoNote oldItem, @NonNull GeoNote newItem) {
-            return oldItem == newItem;
-        }
-
-        @Override
-        public boolean areContentsTheSame(@NonNull GeoNote oldItem, @NonNull GeoNote newItem) {
-            return oldItem.uid.equals(newItem.uid);
-        }
-    }*/
 }
