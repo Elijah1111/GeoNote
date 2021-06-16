@@ -26,7 +26,7 @@
     <ImageView
         android:id="@+id/note_image"
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="70dp"
         android:src="@drawable/crop"
         tools:text="Image Goes here"
         app:layout_constraintTop_toBottomOf="@id/note_name_text_view"
