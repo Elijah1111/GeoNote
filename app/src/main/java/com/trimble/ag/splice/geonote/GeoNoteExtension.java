@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.trimble.ag.splice.Extension;
 import com.trimble.ag.splice.SpliceSystem;
 import com.trimble.ag.splice.geonote.GeoNoteDrawer.GeoNoteDrawerFragment;
+import com.trimble.ag.splice.geonote.GeoNoteMap.GeoNoteFragment;
 import com.trimble.ag.splice.location.Location;
 import com.trimble.ag.splice.location.LocationListener;
 import com.trimble.ag.splice.location.LocationSubsystem;
@@ -25,6 +26,7 @@ public class GeoNoteExtension extends Extension implements ActivityPage {
     private LocationSubsystem localSystem;
     private LocationListener localListener;
     private Location currentLocation;
+    GeoNoteFragment fragment;
 
     public GeoNoteExtension(SpliceSystem system, Context context) {
         super(system, context);
@@ -35,9 +37,24 @@ public class GeoNoteExtension extends Extension implements ActivityPage {
         super.onCreate();
         localSystem = system.getLocationSubsystem();
 
+
         localListener = new LocationListener(){//Listen for location change
             @Override
             public void onLocationChanged(Location location) {
+                if(location.getLocationSource().contains("vehicle")) {
+                    double lat = location.getLatitude();
+                    double lon = location.getLongitude();
+                    String eval = "javascript:updateLocation("+lon+","+lat+")";
+                    //Log.d("aea3", eval);
+                    try {
+                        if(fragment != null) {
+                            fragment.evaluateJavascript(eval);
+                        }
+                    }
+                    catch(Exception e) {
+                        Log.d("aea3", "", e);
+                    }
+                }
                 currentLocation = location;
             }
         };
@@ -57,7 +74,11 @@ public class GeoNoteExtension extends Extension implements ActivityPage {
     @NonNull
     @Override
     public Fragment getFragment() {
-        return new GeoNoteFragment(this);
+
+        if(fragment == null) {
+            fragment = new GeoNoteFragment(this);
+        }
+        return fragment;
     }
 
     @NonNull
