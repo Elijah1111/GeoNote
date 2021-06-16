@@ -1,7 +1,7 @@
 package com.trimble.ag.splice.geonote.GeoNoteMap;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -35,6 +35,9 @@ public class GeoNoteFragment extends SpliceFragment{
     private WebView webView;
     private Bundle webViewBundle;
     private String urlPrefix = "file:///android_asset/";
+    private Boolean redirect = false;
+    private Boolean loaded = true;
+    private List<GeoNote> loadLater;//load these geoNotes when ready
 
     @SuppressLint("ValidFragment")
     public GeoNoteFragment(Extension extension){
@@ -43,16 +46,14 @@ public class GeoNoteFragment extends SpliceFragment{
     }
 
 
-    //protected MapView mMapView;
     protected static List<GeoNote> geoNotes;
     protected static RecyclerView mRecyclerView;
     protected LinearLayoutManager layoutManager;
     protected static GeoNoteAdapter mAdapter;
-    private static GeoNoteDetailsAdapter detailsAdapter;
     private static GeoNoteFragmentViewModel geoNoteFragmentViewModel;
 
     public static void clickedGeonote(GeoNote geoNote) {
-        detailsAdapter = new GeoNoteDetailsAdapter(geoNote);
+        GeoNoteDetailsAdapter detailsAdapter = new GeoNoteDetailsAdapter(geoNote);
         detailsAdapter.addViewModel(geoNoteFragmentViewModel);
         mRecyclerView.setAdapter(detailsAdapter);
     }
@@ -60,7 +61,6 @@ public class GeoNoteFragment extends SpliceFragment{
     public static void backToList() {
         updateUI(geoNotes);
     }
-    // private GoogleMap googleMap;
 
     private static void updateUI(List<GeoNote> geoNotes){
         Log.d(TAG, "Update with "+ geoNotes.size());
@@ -85,12 +85,15 @@ public class GeoNoteFragment extends SpliceFragment{
         webView.saveState(webViewBundle);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")//Ignore the issue, should be no problem on tablet
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView() called");
         View rootView = getLayoutInflater(inflater).inflate(R.layout.geonote, container, false);
-        webView =(WebView) rootView.findViewById(R.id.webView);
-        mRecyclerView=(RecyclerView) rootView.findViewById(R.id.your_geonote_list_recycler_view);
+        webView = rootView.findViewById(R.id.webView);
+        webView.setWebContentsDebuggingEnabled(true);//TODO Remove
+
+        mRecyclerView= rootView.findViewById(R.id.your_geonote_list_recycler_view);
 
 
         layoutManager = new LinearLayoutManager(getActivity());
@@ -99,7 +102,45 @@ public class GeoNoteFragment extends SpliceFragment{
 
         if(webView != null) {
             if(webViewClient == null) {
-                webViewClient = new WebViewClient();
+                webViewClient = new WebViewClient(){
+
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        if(!loaded){
+                            redirect = true;
+                        }
+                        loaded = false;
+                        webView.loadUrl(url);
+                        return true;
+                    }
+
+                    @Override
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                        super.onPageStarted(view, url, favicon);
+                        loaded = false;
+                    }
+
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+                        if(!redirect) {
+                            loaded = true;
+                        }
+                        if(loaded && !redirect){
+                            Log.d(TAG,"Web page Completely Loaded: got "+loadLater.size()+" GeoNotes to draw!");
+
+                            for (GeoNote note : loadLater) {//load the geonotes if they are not loaded yet
+                                double[] pos = note.getPos();
+                                String eval = "javascript:addGeoNote('"+note.getName()+" '," + pos[1] + "," + pos[0] + "," + note.getPictures() + ")";
+                                Log.d("aea3", eval);
+                                evaluateJavascript(eval);
+                            }
+                        }
+                        else{
+                            redirect = false;
+                        }
+                    }
+                };
             }
             webView.setWebViewClient(webViewClient);
             webView.getSettings().setJavaScriptEnabled(true);
@@ -124,13 +165,26 @@ public class GeoNoteFragment extends SpliceFragment{
         geoNoteFragmentViewModel.getGeoNoteLiveData().observe(
                 getViewLifecycleOwner(), geoNotes -> {
                     Log.i(TAG, "Got GeoNotes " + geoNotes.size());
-                    this.geoNotes = geoNotes;
+                    GeoNoteFragment.geoNotes = geoNotes;
                     updateUI(geoNotes);
+                    if(loaded && !redirect) {
+                        for (GeoNote note : geoNotes) {
+                            double[] pos = note.getPos();
+                            String eval = "javascript:addGeoNote(" + note.getName() + "," + pos[1] + "," + pos[0] + "," + note.getPictures() + ")";
+                            Log.d("aea3", eval);
+                            evaluateJavascript(eval);
+                        }
+                    }
+                    else{//The web page is not done loading yet load when done
+                        loadLater = geoNotes;
+                    }
                 }
         );
     }
+
     public void evaluateJavascript(String js) {
         webView.evaluateJavascript(js, null);
+
     }
 
 
