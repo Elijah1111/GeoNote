@@ -81,27 +81,29 @@
   border-radius: 0%;
   cursor: pointer;
 }
-.mapboxgl-popup {
+.mapboxgl-popup {/*style the popup*/
   max-width: 200px;
 }
 
-.mapboxgl-popup-content {
+.mapboxgl-popup-content {/*style the popup content*/
   text-align: center;
   font-family: 'Open Sans', sans-serif;
 }
 
 </style>
 <script>
-function updateLocation(lon, lat) {
+
+function updateLocation(lon, lat) {//Update the location of vehicle
 	document.getElementById("currentLocation").innerHTML = "("+lon+", "+lat+")";
 	if(map){
 		map.getSource("vehicle").setData({type: "Feature",//set the vehicle position
 	 		geometry: {type: "Point", 
 			coordinates: [lon, lat]}
 		});
-    	map.setCenter([lon, lat]);
+    	map.setCenter([lon, lat]);//set the map center on to the vehicle
 	}
 }
+
 function drawMark (feat){//draw a marker
   	// create a HTML element for each feature
   	var el = document.createElement('div');
@@ -109,14 +111,10 @@ function drawMark (feat){//draw a marker
 	switch(feat.properties.title){//Set the images in Here TODO
 		case 'Hazard':
 			console.log("Hazard");
-			//marker.backgroundimage.setUrl("../../res/drawable/hazard.png");
-			break; 
-		case 'Pest':
-			console.log("Pest"); 
 			break;
 		//etc
 		case 'NULL':
-			return;//do not draw the null
+			return;//do not draw the placeholder
 		default: 
 			//Should Already be a generic 
 	}
@@ -124,24 +122,22 @@ function drawMark (feat){//draw a marker
   new mapboxgl.Marker(el)
     .setLngLat(feat.geometry.coordinates)
     .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-    .setHTML('<h3>' + feat.properties.title + '</h3><p>' + feat.properties.description + '</p>'))
+    .setHTML('<h3>' + feat.properties.title + '</h3><p>' + feat.properties.description + '</p>'))//html for the popops
 	.addTo(map);
 }
 
-function addGeoNote(name,lon,lat,picture){
+function addGeoNote(name,lon,lat,picture){//add a GeoNote to the GeoJson
 geojson.features.push({"type": 'Feature',
     "geometry": {
       "type": 'Point',"coordinates": [lon, lat]
     },
     "properties": {
-      "title": name ,"description": picture
+      "title": name ,"description": lon+","+lat
 	}
 	});
-console.log(geojson.features);
 var len = geojson.features.length;
-drawMark(geojson.features[len-1]);
+drawMark(geojson.features[len-1]);//draw the feature we just added
 }
-
 
 </script>
 
@@ -176,7 +172,7 @@ map.loadImage('https://vehicle-sync-test.s3-us-west-2.amazonaws.com/icons/blue_t
 		{
 if (error) throw error;
 map.addImage('blue_v', image);
-map.addLayer({
+map.addLayer({//add the vehicle to the map
 "id": "vehicle",
 "type": "symbol",
 "source": {
@@ -192,7 +188,7 @@ map.addLayer({
 }]
 }
 },
-"layout": {
+"layout": {//style the vehicle
 "icon-image": "blue_v",
 "icon-size": .65,
 "icon-rotate": 0,
@@ -205,7 +201,7 @@ map.addLayer({
 "text-justify": "auto"
 
 },
-"paint": {
+"paint": {//paint the text 
 	"text-halo-color": "#000",
 	"text-halo-width": 2,
 	"text-color": "#fff"
@@ -216,7 +212,7 @@ map.addLayer({
  
 });
 
-var geojson = {
+var geojson = {//the geoJson that gets drawn onto the map
   type: 'FeatureCollection',
   features: [{
     type: 'Feature',//This feature is a placeholder do not remove
