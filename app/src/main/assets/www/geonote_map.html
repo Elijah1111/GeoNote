@@ -73,8 +73,73 @@
   padding-left: 12px;
   padding-bottom: 16px
 }
-</style>
+.marker {/*Make the GeoNote Markers*/
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/c/c0/Anchor.png');/*TODO this is a PlaceHolder*/
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border-radius: 0%;
+  cursor: pointer;
+}
+.mapboxgl-popup {/*style the popup*/
+  max-width: 200px;
+}
 
+.mapboxgl-popup-content {/*style the popup content*/
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+}
+
+</style>
+<script>
+
+function updateLocation(lon, lat) {//Update the location of vehicle
+	document.getElementById("currentLocation").innerHTML = "("+lon+", "+lat+")";
+	if(map){
+		map.getSource("vehicle").setData({type: "Feature",//set the vehicle position
+	 		geometry: {type: "Point", 
+			coordinates: [lon, lat]}
+		});
+    	map.setCenter([lon, lat]);//set the map center on to the vehicle
+	}
+}
+
+function drawMark (feat){//draw a marker
+  	// create a HTML element for each feature
+  	var el = document.createElement('div');
+ 	el.className = 'marker';
+	switch(feat.properties.title){//Set the images in Here TODO
+		case 'Hazard':
+			console.log("Hazard");
+			break;
+		//etc
+		case 'NULL':
+			return;//do not draw the placeholder
+		default: 
+			//Should Already be a generic 
+	}
+  // make a marker for each feature and add to the map
+  new mapboxgl.Marker(el)
+    .setLngLat(feat.geometry.coordinates)
+    .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+    .setHTML('<h3>' + feat.properties.title + '</h3><p>' + feat.properties.description + '</p>'))//html for the popops
+	.addTo(map);
+}
+
+function addGeoNote(name,lon,lat,picture){//add a GeoNote to the GeoJson
+geojson.features.push({"type": 'Feature',
+    "geometry": {
+      "type": 'Point',"coordinates": [lon, lat]
+    },
+    "properties": {
+      "title": name ,"description": lon+","+lat
+	}
+	});
+var len = geojson.features.length;
+drawMark(geojson.features[len-1]);//draw the feature we just added
+}
+
+</script>
 
 
 
@@ -90,31 +155,12 @@
 <div class="column right">
 <div id="map"></div>
 <script>
-function setTract(){
-if(map){
-}
-}
-function setMapCenter(coords) {
-  if (map) {
-    map.setCenter(coords);
-  }
-}
 
-function updateLocation(lon, lat) {
-	document.getElementById("currentLocation").innerHTML = "("+lon+", "+lat+")";
-	if(map){
-		map.getSource("vehicle").setData({type: "Feature",//set the vehicle position
-	 		geometry: {type: "Point", 
-			coordinates: [lon, lat]}
-		});
-    	map.setCenter([lon, lat]);//TODO Make this smoother by only moving the center everyso often
-	}
-}
 mapboxgl.accessToken = '***REMOVED***';
 var map = new mapboxgl.Map({
 container: 'map',
 zoom: 18,
-center: [0,0],
+center: [0, 0],
 style: 'mapbox://styles/mapbox/satellite-v9'
 });
 
@@ -123,11 +169,10 @@ style: 'mapbox://styles/mapbox/satellite-v9'
 
 map.on('load', function () {
 map.loadImage('https://vehicle-sync-test.s3-us-west-2.amazonaws.com/icons/blue_triangle.png', function(error, image) 
-//map.loadImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Red_triangle_with_thick_white_border.svg/200px-Red_triangle_with_thick_white_border.svg.png', function(error, image) 
 		{
 if (error) throw error;
 map.addImage('blue_v', image);
-map.addLayer({
+map.addLayer({//add the vehicle to the map
 "id": "vehicle",
 "type": "symbol",
 "source": {
@@ -138,12 +183,12 @@ map.addLayer({
 "type": "Feature",
 "geometry": {
 "type": "Point",
-"coordinates": [-104.9984, 40.298259]
+"coordinates": [0,0]
 }
 }]
 }
 },
-"layout": {
+"layout": {//style the vehicle
 "icon-image": "blue_v",
 "icon-size": .65,
 "icon-rotate": 0,
@@ -156,15 +201,32 @@ map.addLayer({
 "text-justify": "auto"
 
 },
-"paint": {
+"paint": {//paint the text 
 	"text-halo-color": "#000",
 	"text-halo-width": 2,
 	"text-color": "#fff"
 }
 });
 });
+
  
 });
+
+var geojson = {//the geoJson that gets drawn onto the map
+  type: 'FeatureCollection',
+  features: [{
+    type: 'Feature',//This feature is a placeholder do not remove
+    geometry: {
+      type: 'Point',
+      coordinates: [0, 0]
+    },
+    properties: {
+      title: 'Null',
+      description: 'Do Not Render'
+    }
+  }]
+};
+
 </script>
 </div>
 
