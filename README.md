@@ -1,5 +1,6 @@
 # GeoNote
-Splice extension for Trimble tractor displays.
+An extension for Trimble's Precision-IQ Android application
+
 
 GeoNotes are datastructures representing a note at a specific location.
 
@@ -17,4 +18,4 @@ A GeoNote contains:
 * [@jacks0nwill](https://github.com/jacks0nwill)
 * [@ConBil16](https://github.com/ConBil16)
 * [@jksimpson13](https://github.com/jksimpson13)
-* Trimble (Splice API)
+* [Trimble](https://agdeveloper.trimble.com/) (Splice API)
