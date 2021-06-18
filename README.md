@@ -7,8 +7,7 @@ A GeoNote contains:
 * An icon representing the type of note
 * A type: trash, animal, warning, etc.
 * Location information
-* An optional recorded message
-* Pictures from the front and rear cameras
+* An optinal picture from the attached camera
 
 # Usage
 * TODO
