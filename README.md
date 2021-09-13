@@ -2,7 +2,7 @@
 An extension for Trimble's Precision-IQ(PIQ) Android application
 Created for CS@Mines Field Session
 
-# Back Ground
+# Background
 Trimble Agriculture's Precision-IQ(PIQ) application is designed to assist farmers in operating various farm equipment. This includes automated driving and application control. See Trimble Ag's website for more information.
 
 # Description
